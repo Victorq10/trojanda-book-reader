@@ -4,6 +4,32 @@
 a {
     text-decoration: none;
 }
+html.contrast #img-full-contrast {
+    display: none;
+}
+html.contrast #img-low-contrast {
+    display: inline;
+}
+html:not(.contrast) #img-full-contrast {
+    display: inline;
+}
+html:not(.contrast) #img-low-contrast {
+    display: none;
+}
+
+html.inverted #img-dark {
+    display: none;
+}
+html.inverted #img-light {
+    display: inline;
+}
+html:not(.inverted) #img-dark {
+    display: inline;
+}
+html:not(.inverted) #img-light {
+    display: none;
+}
+
 /* css from the https://thebestmotherfucking.website/ */
 body {
     font-family: Open Sans, Arial;
