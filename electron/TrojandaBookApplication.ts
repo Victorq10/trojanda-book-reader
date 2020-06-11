@@ -75,7 +75,7 @@ export class TrojandaBookApplication {
 
         this.win.webContents.on('did-finish-load', () => {
             this.win.webContents.send('ping', 'whoooooooh!')
-            this.win.maximize();
+            //this.win.maximize();
         })
         // Open the DevTools.
         //win.webContents.openDevTools()
