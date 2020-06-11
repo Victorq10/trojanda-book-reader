@@ -85,7 +85,7 @@ export class TrojandaBookApplication {
             this.win.setPosition(position.x, position.y, false);
             this.win.show();
             this.win.focus();
-            async () => this.win.maximize();
+            //async () => this.win.maximize();
         })
 
         this.win.on('enter-full-screen', () => {
