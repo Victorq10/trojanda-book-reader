@@ -64,7 +64,8 @@ export function testCreateDb() {
         stmt.run("Ipsum " + i + ': ' + new Date());
     }
 
-    const all = db.prepare("SELECT rowid AS id, info FROM lorem").all();
+    const all = db.prepare("SELECT rowid AS id, info FROM lorem ORDER BY id DESC LIMIT 5").all();
+    console.log('Last 5 starting time:');
     for (const row of all) {
         console.log(row.id + ": " + row.info);
     };
