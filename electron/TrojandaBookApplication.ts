@@ -104,9 +104,7 @@ export class TrojandaBookApplication {
     }
 
     open_ePub_book() {
-        console.log("test watch......")
-        //let book_dir = path.resolve(APP_HOME_DIR, 'books');
-        let book_dir = '/home/viktor/dev/projects/home/TrojandaReader/books';
+        let book_dir = __dirname + '/../books';
         if (fs.existsSync(book_dir) && !fs.statSync(book_dir).isDirectory()) {
             book_dir = __dirname;
         }

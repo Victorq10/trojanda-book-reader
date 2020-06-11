@@ -8,6 +8,7 @@ INSTALLATION
 ```
 git clone git@github.com:Victorq10/trojanda-book-reader.git
 npm install
+npm run build
 npm run start
 ```
 
