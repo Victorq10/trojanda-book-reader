@@ -7,10 +7,26 @@ INSTALLATION
 ------------
 ```
 git clone git@github.com:Victorq10/trojanda-book-reader.git
+cd trojanda-book-reader
 npm install
 npm run build
 npm run start
 ```
+
+WORK IN THE VISUAL STUDIO IDE
+-----------------------------
+```
+cd trojanda-book-reader
+code trojanda-book-reader.code-workspace 
+```
+Open terminal in the Code and run a command to compile *.ts files on save:
+```
+npm run watch
+```
+
+Open Debuger drop-down menu and select `Debug Main Process (trojanda-book-reader)`
+
+Enjoy!!!
 
 USED VERSIONS
 -------------
