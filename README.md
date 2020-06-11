@@ -13,8 +13,8 @@ npm run build
 npm run start
 ```
 
-WORK IN THE VISUAL STUDIO IDE
------------------------------
+WORK IN THE VISUAL STUDIO CODE IDE
+----------------------------------
 ```
 cd trojanda-book-reader
 code trojanda-book-reader.code-workspace 
