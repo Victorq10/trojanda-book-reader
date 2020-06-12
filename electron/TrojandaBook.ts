@@ -27,6 +27,17 @@ const getAllFiles = function (dirPath: any): string[] {
 
     return returnFileList
 }
+
+const get_children_by_name = function (element: Element, children_tag_name : string) : Array<Element> {
+    let elements: Element[] = [];
+    for (let i = 0; i < element.childNodes.length; i++) {
+        let node: Node = element.childNodes[i];
+        if (node.nodeName === children_tag_name) {
+            elements.push(node as Element);
+        }
+    }
+    return elements;
+}
 const readXMLFile = function (xmlfilepath: string): Document | undefined {
     let xmlDoc;
     if (fs.existsSync(xmlfilepath) && fs.statSync(xmlfilepath).isFile()) {
@@ -54,7 +65,7 @@ export class NavPoint {
 
     fullFilepath?: string;
 }
-class ManifestItem {
+export class ManifestItem {
     id?: string | null;
     href?: string | null;
     mediaType?: string | null;
@@ -102,11 +113,11 @@ export class TrojandaBook {
         this.determineTOCFilepath();
         this.parseTOCFile();
 
-        this.getTOC_json();
-        this.getSpine_json();
+        this.init_book_toc();
+        this.init_spine();
     }
 
-    getTOC_json() {
+    init_book_toc() {
         if (this.tocFileXmlDoc === undefined) {
             return;
         }
@@ -115,14 +126,14 @@ export class TrojandaBook {
         bookTOC.author = this.getTextContent("docAuthor", this.tocFileXmlDoc);
         let navMap: Element = this.tocFileXmlDoc.getElementsByTagName("navMap")[0];
         if (navMap) {
-            bookTOC.navPoints = this.createNavPoints(navMap.getElementsByTagName('navPoint'))
+            bookTOC.navPoints = this.create_NavPoints(get_children_by_name(navMap, 'navPoint'))
         }
         this.bookTOC = bookTOC;
         this.bookTitle = bookTOC.title;
         this.bookAuthor = bookTOC.author;
     }
 
-    createNavPoints(childNodes: HTMLCollectionOf<Element>): NavPoint[] {
+    create_NavPoints(childNodes: Array<Element>): NavPoint[] {
         let navPoints: NavPoint[] = [];
         for (let i = 0; i < childNodes.length; i++) {
             let node: Element = childNodes[i];
@@ -131,7 +142,7 @@ export class TrojandaBook {
                 navPoint.label = this.getTextContent('navLabel', node);
                 navPoint.src = this.getAttr('content', 'src', node);
                 navPoint.fullFilepath = path.resolve(this.contentBaseDir, navPoint.src);
-                navPoint.subNavPoints = this.createNavPoints(node.getElementsByTagName('navPoint'));
+                navPoint.subNavPoints = this.create_NavPoints(get_children_by_name(node, 'navPoint'));
                 navPoints.push(navPoint);
             }
         }
@@ -163,7 +174,7 @@ export class TrojandaBook {
         return text;
     }
 
-    getSpine_json() {
+    init_spine() {
         if (this.rootOPFFileXmlDoc === undefined) {
             return;
         }
