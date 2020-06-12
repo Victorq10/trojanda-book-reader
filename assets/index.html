@@ -13,44 +13,48 @@
     <base href=".">
   </head>
   <body>
-    <div>
+    <div id="js-application-menu-bar">
       <button id="js-open-book-btn" title="Open ePub book"><img src="Images/Open_Book.svg"></button>
-      <button id="js-book-content-btn" title="Зміст"><img src="Images/Book_Content.svg"></button>
-      <button id="js-current-reading-btn" title="Читати"><img src="Images/Reading.svg"></button>
+      <button id="js-toc-content-btn" title="Зміст"><img src="Images/Toc.svg"></button>
+      <button id="js-reading-content-btn" title="Читати"><img src="Images/Reading.svg"></button>
       <button id="js-prev-chapter-btn" title="Назад"><img src="Images/Previous_Spine.svg"></button>
       <button id="js-next-chapter-btn" title="Вперед"><img src="Images/Next_Spine.svg"></button>
-      <button id="js-statistics-btn" title="Інформація про книгу"><img src="Images/Book_Info.svg"></button>
-      <button id="js-history-btn" title="Бібліотека"><img src="Images/Library.svg"></button>
-      <button id="js-settings-btn" title="Налаштування"><img src="Images/Settings_Icon.svg"></button>
-      <button id="js-contrast-btn" title="Контраст"><img src="Images/Full_Contrast_Mode.svg" id="img-full-contrast"><img src="Images/Low_Contrast_Mode.svg" id="img-low-contrast"></button>
+      <button id="js-book-info-content-btn" title="Інформація про книгу"><img src="Images/Book_Info.svg"></button>
+      <button id="js-library-content-btn" title="Бібліотека"><img src="Images/Library.svg"></button>
+      <button id="js-settings-content-btn" title="Налаштування"><img src="Images/Settings.svg"></button>
+      <button id="js-contrast-btn" title="Контраст"><img src="Images/High_Contrast_Mode.svg" id="img-high-contrast"><img src="Images/Low_Contrast_Mode.svg" id="img-low-contrast"></button>
       <button id="js-invmode-btn" title="День/Нічь"><img src="Images/Light_Mode.svg" id="img-light"><img src="Images/Dark_Mode.svg" id="img-dark"></button>
     </div>
     <br>
-    <div>
-      <div id="title"></div>
-      <div id="author"></div>
-    </div>
-    <br>
-    <div id="toc">
+
+    <div id="js-toc-content">
+        <div id="title"></div>
+        <div id="author"></div>
+        <br>
         <div>Зміст</div>
         <div id="bookNavMap"></div>
     </div>
-    <div id="bookContent"></div>
-    <br>
-    <hr>
-    <!-- 
-    We are using node <script>document.write(process.versions.node)</script>,
-    Chrome <script>document.write(process.versions.chrome)</script>,
-    and Electron <script>document.write(process.versions.electron)</script>.
-    -->
-    We are using Node.js <span id="node-version"></span>,
-    Chromium <span id="chrome-version"></span>,
-    and Electron <span id="electron-version"></span>.
-    <hr>
-    <div id="holder">
-      Drag your file here
+    <div id="js-reading-content"></div>
+    <div id="js-book-info-content"></div>
+    <div id="js-library-content"></div>
+
+    <div id="js-settings-content">
+      <hr>
+      <!-- 
+      We are using node <script>document.write(process.versions.node)</script>,
+      Chrome <script>document.write(process.versions.chrome)</script>,
+      and Electron <script>document.write(process.versions.electron)</script>.
+      -->
+      We are using Node.js <span id="node-version"></span>,
+      Chromium <span id="chrome-version"></span>,
+      and Electron <span id="electron-version"></span>.
+      <hr>
+      <div id="holder">
+        Drag your file here
+      </div>
+      <a href="the_best_website.html" id="rbw">The Best Website</a>
     </div>
-    <a href="the_best_website.html" id="rbw">The Best Website</a>
+    <br>
 
     <!-- You can also require other files to run in this process -->
     <script src="../build/renderer.js"></script>

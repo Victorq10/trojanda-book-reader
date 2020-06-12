@@ -58,16 +58,42 @@ window.addEventListener('DOMContentLoaded', () => {
     addEvent('js-open-book-btn', (event : MouseEvent) => {
         ipcRenderer.send('open-book', 'ping')
     });
-    addEvent('js-book-content-btn', (event : MouseEvent) => {
-        document.getElementById('bookContent').style.display = 'none';
-        document.getElementById('toc').style.display = '';
+    addEvent('js-toc-content-btn', (event : MouseEvent) => {
+        show_content_by_id('js-toc-content');
     });
-    addEvent('js-current-reading-btn', (event : MouseEvent) => {
-        document.getElementById('bookContent').style.display = '';
-        document.getElementById('toc').style.display = 'none';
+    addEvent('js-prev-chapter-btn', (event : MouseEvent) => {
+        console.log('TODO: wait for implementation.');
     });
-    
+    addEvent('js-next-chapter-btn', (event : MouseEvent) => {
+        console.log('TODO: wait for implementation.');
+    });
+    addEvent('js-reading-content-btn', (event : MouseEvent) => {
+        show_content_by_id('js-reading-content');
+    });
+    addEvent('js-book-info-content-btn', (event : MouseEvent) => {
+        show_content_by_id('js-book-info-content');
+    });
+    addEvent('js-library-content-btn', (event : MouseEvent) => {
+        show_content_by_id('js-library-content');
+    });
+    addEvent('js-settings-content-btn', (event : MouseEvent) => {
+        show_content_by_id('js-settings-content');
+    });
+    show_content_by_id('js-toc-content');
 });
+
+let content_ids = ['js-toc-content', 'js-reading-content', 'js-book-info-content', 
+        'js-library-content-btn', 'js-settings-content'];
+function show_content_by_id(elmt_id : string) : void {
+    for (const content_id of content_ids) {
+        const elmt = document.getElementById(content_id);
+        if (content_id === elmt_id) {
+            elmt.style.display = '';
+        } else {
+            elmt.style.display = 'none';
+        }
+    }
+}
 
 let trojandaBook : TrojandaBook;
 
@@ -127,7 +153,7 @@ document.addEventListener('click', (event) => {
                     //base.setAttribute('href', '../data/currentBook/OEBPS/Text/')
                     //base.setAttribute('href', '../data/currentBook/')
                 }
-                let bookContentElement = document.getElementById('bookContent');
+                let bookContentElement = document.getElementById('js-reading-content');
                 bookContentElement.innerHTML = data
                 // remove all style elements from the chapter
                 const removeElemens = (tagName: string) => {
@@ -140,8 +166,8 @@ document.addEventListener('click', (event) => {
                 removeElemens('style');
                 removeElemens('meta');
                 removeElemens('title');
-                bookContentElement.style.display = '';
-                document.getElementById('toc').style.display = 'none';
+
+                show_content_by_id('js-reading-content')
             }).catch((err) => {
                 console.log('Error on reading “' + href + '” file: ' + err.message);
             });
