@@ -9,6 +9,12 @@ import { TrojandaBook, NavPoint, ManifestItem } from './TrojandaBook';
 import * as path from 'path'
 import * as fs from 'fs-extra'
 
+let current_spine_src: string;
+let current_book: CurrentBookHelper;
+let content_ids = ['js-toc-content', 'js-reading-content', 'js-book-info-content',
+    'js-library-content-btn', 'js-settings-content'];
+
+
 // It has the same sandbox as a Chrome extension.
 window.addEventListener('DOMContentLoaded', () => {
     // convert relative pathes to absolete
@@ -73,22 +79,7 @@ window.addEventListener('DOMContentLoaded', () => {
     addEvent('js-settings-content-btn', (event: MouseEvent) => {
         show_content_by_id('js-settings-content');
     });
-    show_content_by_id('js-toc-content');
 });
-
-let content_ids = ['js-toc-content', 'js-reading-content', 'js-book-info-content',
-    'js-library-content-btn', 'js-settings-content'];
-
-function show_content_by_id(elmt_id: string): void {
-    for (const content_id of content_ids) {
-        const elmt = document.getElementById(content_id);
-        if (content_id === elmt_id) {
-            elmt.style.display = '';
-        } else {
-            elmt.style.display = 'none';
-        }
-    }
-}
 
 ipcRenderer.on('display-book', (event: any, trojanda_book: TrojandaBook) => {
     console.log(trojanda_book); // prints "pong"
@@ -109,8 +100,17 @@ document.addEventListener('click', (event) => {
     }
 });
 
-let current_spine_src: string;
-let current_book: CurrentBookHelper;
+function show_content_by_id(elmt_id: string): void {
+    for (const content_id of content_ids) {
+        const elmt = document.getElementById(content_id);
+        if (content_id === elmt_id) {
+            elmt.style.display = '';
+        } else {
+            elmt.style.display = 'none';
+        }
+    }
+}
+
 class CurrentBookHelper {
     trojanda_book: TrojandaBook;
     spine_manifest_items: Array<ManifestItem> = [];
@@ -119,7 +119,7 @@ class CurrentBookHelper {
         this.trojanda_book = trojanda_book
         for (const manifest_item_id of trojanda_book.spine) {
             let found = false;
-            for (const manifest_item of trojanda_book.manifestItems) {
+            for (const manifest_item of trojanda_book.manifest_items) {
                 if (manifest_item.id === manifest_item_id) {
                     found = true;
                     this.spine_manifest_items.push(manifest_item);
@@ -134,17 +134,23 @@ class CurrentBookHelper {
     }
 
     init_and_display_toc_content(): void {
-        const titleElement = document.getElementById('title');
-        const authorElement = document.getElementById('author');
-        const bookNavMapElement = document.getElementById('bookNavMap');
-        if (titleElement && authorElement && bookNavMapElement) {
-            bookNavMapElement.innerHTML = '';
-            titleElement.textContent = this.trojanda_book.bookTitle || "";
-            authorElement.textContent = this.trojanda_book.bookAuthor || "";
-            if (this.trojanda_book.bookTOC && this.trojanda_book.bookTOC.navPoints) {
-                bookNavMapElement.appendChild(this.create_list_from_navPoint(this.trojanda_book.bookTOC.navPoints));
+        current_spine_src = '';
+        const reading_content_elmt = document.getElementById('js-reading-content');
+        if (reading_content_elmt) {
+            reading_content_elmt.innerHTML = '';
+        }
+        const title_elmt = document.getElementById('title');
+        const author_elmt = document.getElementById('author');
+        const book_nav_map_elmt = document.getElementById('book-nav-map');
+        if (title_elmt && author_elmt && book_nav_map_elmt) {
+            book_nav_map_elmt.innerHTML = '';
+            title_elmt.textContent = this.trojanda_book.book_title || "";
+            author_elmt.textContent = this.trojanda_book.book_author || "";
+            if (this.trojanda_book.book_toc && this.trojanda_book.book_toc.nav_points) {
+                book_nav_map_elmt.appendChild(this.create_list_from_navPoint(this.trojanda_book.book_toc.nav_points));
             }
         }
+        show_content_by_id('js-toc-content');
     }
 
     create_list_from_navPoint(navPoints: NavPoint[]): HTMLUListElement {
@@ -153,11 +159,11 @@ class CurrentBookHelper {
             let li_elmt = document.createElement('li');
             let a_elmt = document.createElement('a');
             a_elmt.textContent = navPoint.label || "";
-            a_elmt.href = navPoint.fullFilepath || ""; //navPoint.src;
+            a_elmt.href = navPoint.full_filepath || ""; //navPoint.src;
             a_elmt.dataset.spineSrc = navPoint.src;
             li_elmt.appendChild(a_elmt);
-            if (navPoint.subNavPoints && navPoint.subNavPoints.length > 0) {
-                let subUlElement = this.create_list_from_navPoint(navPoint.subNavPoints);
+            if (navPoint.sub_nav_points && navPoint.sub_nav_points.length > 0) {
+                let subUlElement = this.create_list_from_navPoint(navPoint.sub_nav_points);
                 li_elmt.appendChild(subUlElement);
             }
             ul_elmt.appendChild(li_elmt);
@@ -194,7 +200,7 @@ class CurrentBookHelper {
     }
 
     load_and_display_manifestItem(manifest_item: ManifestItem) {
-        let href = manifest_item.fullFilepath;
+        let href = manifest_item.full_filepath;
         console.log('Opening a ManifestItem “' + manifest_item.id + '”')
         let filepath = href.replace('file://', '') // existed link on the page with full path
         this.load_and_display_file_content(filepath)

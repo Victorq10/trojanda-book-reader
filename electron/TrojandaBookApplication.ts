@@ -5,51 +5,51 @@ import * as fs from 'fs'
 import './Constants'
 import { APP_ASSETS_DIR, APP_HOME_DIR, APPLICATION_INDEX_FILE } from "./Constants";
 import { TrojandaBook } from './TrojandaBook'
-import { testCreateDb, initDb } from "./db";
+import { test_create_db, init_db } from "./db";
 
 
 export class TrojandaBookApplication {
-    currentBook: TrojandaBook;
+    current_book: TrojandaBook;
     private win: BrowserWindow;
     private tray: Tray;
 
-    initApp() {
-        this.createApplicationMenu();
-        this.createWindow();
-        initDb();
+    init_app() {
+        this.create_application_menu();
+        this.create_window();
+        init_db();
     }
 
-    recreateWindow() {
-        this.createWindow();
+    recreate_window() {
+        this.create_window();
     }
 
-    private createApplicationMenu() {
-        const existedMenu = Menu.getApplicationMenu();
+    private create_application_menu() {
+        const existed_menu = Menu.getApplicationMenu();
         const open_ePub_book_menuItem = new MenuItem({
             label: 'Open ePub Book',
             accelerator: 'CmdOrCtrl+O',
             click: (item: any, focusedWindow: any) => { // TODO check types
-                this.open_ePub_book();
+                this.open_epub_book();
             }
         });
-        if (existedMenu != null && existedMenu.items.length > 0 && existedMenu.items[0].submenu != null) {
-            existedMenu.items[0].submenu.insert(0, open_ePub_book_menuItem);
+        if (existed_menu != null && existed_menu.items.length > 0 && existed_menu.items[0].submenu != null) {
+            existed_menu.items[0].submenu.insert(0, open_ePub_book_menuItem);
         }
     }
 
-    private createWindow() {
-        let appIcon = path.join(APP_ASSETS_DIR, 'trojanda-book-reader.png')
+    private create_window() {
+        let app_icon = path.join(APP_ASSETS_DIR, 'trojanda-book-reader.png')
 
         // Create a new tray
-        this.tray = new Tray(appIcon)
-        this.tray.on('right-click', this.toggleWindow)
-        this.tray.on('double-click', this.toggleWindow)
+        this.tray = new Tray(app_icon)
+        this.tray.on('right-click', this.toggle_window)
+        this.tray.on('double-click', this.toggle_window)
         this.tray.on('click', () => {
-            this.toggleWindow()
+            this.toggle_window()
         })
 
         console.log("__dirname: " + __dirname)
-        const windowOptions: any = {
+        const window_options: any = {
             width: 800,
             height: 600,
             backgroundColor: '#000',
@@ -64,11 +64,11 @@ export class TrojandaBookApplication {
         };
 
         if (process.platform === 'linux') {
-            windowOptions.icon = appIcon
+            window_options.icon = app_icon
         }
 
         // Create the browser window.
-        this.win = new BrowserWindow(windowOptions);
+        this.win = new BrowserWindow(window_options);
         this.win.title = 'Trojanda Book Reader'
         // and load the index.html of the app.
         this.win.loadFile(path.join(APP_ASSETS_DIR, 'index.html'))
@@ -81,7 +81,7 @@ export class TrojandaBookApplication {
         //win.webContents.openDevTools()
 
         this.win.once('ready-to-show', () => {
-            const position = this.getWindowPosition();
+            const position = this.get_window_position();
             this.win.setPosition(position.x, position.y, false);
             this.win.show();
             this.win.focus();
@@ -103,7 +103,7 @@ export class TrojandaBookApplication {
         */
     }
 
-    open_ePub_book() {
+    open_epub_book() {
         let book_dir = __dirname + '/../books';
         if (fs.existsSync(book_dir) && !fs.statSync(book_dir).isDirectory()) {
             book_dir = __dirname;
@@ -131,10 +131,10 @@ export class TrojandaBookApplication {
         for (const filepath of event.filePaths) {
             // Change how to handle the file content
             console.log("Opening “" + filepath + "” book ...");
-            this.currentBook = new TrojandaBook(filepath, (book) => {
-                this.win.loadFile(APPLICATION_INDEX_FILE).then(() => {
+            this.current_book = new TrojandaBook(filepath, (book) => {
+                //this.win.loadFile(APPLICATION_INDEX_FILE).then(() => {
                     this.win.webContents.send('display-book', book);
-                });
+                //});
 
             });
             break;
@@ -142,30 +142,30 @@ export class TrojandaBookApplication {
     }
 
 
-    private getWindowPosition() {
-        const windowBounds = this.win.getBounds()
-        const trayBounds = this.tray.getBounds()
+    private get_window_position() {
+        const window_bounds = this.win.getBounds()
+        const tray_bounds = this.tray.getBounds()
 
         // Center window horizontally below the tray icon
-        const x = Math.round(trayBounds.x + (trayBounds.width / 2) - (windowBounds.width / 2))
+        const x = Math.round(tray_bounds.x + (tray_bounds.width / 2) - (window_bounds.width / 2))
 
         // Position window 4 pixels vertically below the tray icon
-        const y = Math.round(trayBounds.y + trayBounds.height + 4)
+        const y = Math.round(tray_bounds.y + tray_bounds.height + 4)
 
         return { x: x, y: y }
     }
 
     // toggle window
-    private toggleWindow() {
+    private toggle_window() {
         if (this.win.isVisible()) {
             this.win.hide()
         } else {
-            this.showWindow()
+            this.show_window()
         }
     }
 
-    private showWindow() {
-        const position = this.getWindowPosition()
+    private show_window() {
+        const position = this.get_window_position()
         this.win.setPosition(position.x, position.y, false)
         this.win.show()
         //this.win.maximize();
@@ -176,7 +176,7 @@ export class TrojandaBookApplication {
 
 //globalThis.trojandaBookApplicationTest = new TrojandaBookApplication();
 
-export const trojandaBookApplicationTest3 = new TrojandaBookApplication();
+//export const trojandaBookApplicationTest3 = new TrojandaBookApplication();
 
 //export const trojandaBookApplication = new TrojandaBookApplication();
 

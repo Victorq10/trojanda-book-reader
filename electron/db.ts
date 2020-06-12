@@ -4,8 +4,8 @@ import * as fs from 'fs';
 import { APP_DB_FILEPATH, APP_DATA_DIR } from './Constants';
 
 
-export function initDb() {
-    testCreateDb();
+export function init_db() {
+    test_create_db();
     if (fs.existsSync(APP_DB_FILEPATH)) {
         return;
     }
@@ -54,7 +54,7 @@ export function initDb() {
 }
 
 // test
-export function testCreateDb() {
+export function test_create_db() {
     const db = new Database(APP_DATA_DIR + '/testBooks.db');
 
     db.exec("CREATE TABLE IF NOT EXISTS lorem (info TEXT)");

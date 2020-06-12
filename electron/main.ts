@@ -2,19 +2,19 @@ import { app, BrowserWindow, ipcMain } from "electron"
 import { TrojandaBookApplication } from "./TrojandaBookApplication";
 
 
-const trojandaBookApplication = new TrojandaBookApplication();
-global.trojandaBookApplicationInstance = trojandaBookApplication;
+const trojanda_book_application = new TrojandaBookApplication();
+global.trojandaBookApplicationInstance = trojanda_book_application;
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
-    trojandaBookApplication.initApp();
+    trojanda_book_application.init_app();
 
     app.on('activate', () => {
         // On macOS it's common to re-create a window in the app when the
         // dock icon is clicked and there are no other windows open.
-        if (BrowserWindow.getAllWindows().length === 0) trojandaBookApplication.recreateWindow()
+        if (BrowserWindow.getAllWindows().length === 0) trojanda_book_application.recreate_window()
     })
 })
 
@@ -30,6 +30,6 @@ app.on('window-all-closed', () => {
 // code. You can also put them in separate files and require them here.
 
 ipcMain.on('open-book', () => {
-    trojandaBookApplication.open_ePub_book();
+    trojanda_book_application.open_epub_book();
     //event.reply('asynchronous-reply', 'pong')
 })

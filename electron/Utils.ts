@@ -1,7 +1,7 @@
 import * as path from 'path'
 import * as fs from 'fs'
 
-function testWriteFile() {
+function test_write_file() {
     var filepath = path.join(__dirname, '.', 'TESTEXISTEDFILE.md');
     var content = "This is the new content of the file";
 

@@ -9,9 +9,9 @@ declare namespace NodeJS {
         trojandaBookApplicationInstance: TrojandaBookApplicationInterface;
     }
     export interface TrojandaBookApplicationInterface {
-        initApp(): void;
-        recreateWindow(): void;
-        open_ePub_book(): void;
+        init_app(): void;
+        recreate_window(): void;
+        open_epub_book(): void;
     }
 }
 

@@ -18,41 +18,41 @@ const ELEMENT_NODE = dom.ELEMENT_NODE;
 console.log(dom)
 console.log(dom.Node)
 test();
-function readXMLFile(xmlfilepath: string): Document | undefined {
-    let xmlDoc;
-    if (fs.existsSync(xmlfilepath) && fs.statSync(xmlfilepath).isFile()) {
+function read_xml_file(xml_filepath: string): Document | undefined {
+    let xmldoc;
+    if (fs.existsSync(xml_filepath) && fs.statSync(xml_filepath).isFile()) {
         try {
-            let data = fs.readFileSync(xmlfilepath, 'utf-8');
-            console.log("Reading xml file “" + xmlfilepath + "” (size" + data.length + ")...");
+            let data = fs.readFileSync(xml_filepath, 'utf-8');
+            console.log("Reading xml file “" + xml_filepath + "” (size" + data.length + ")...");
             let parser = new DOMParser();
-            xmlDoc = parser.parseFromString(data, "application/xml");
+            xmldoc = parser.parseFromString(data, "application/xml");
         } catch (err) {
             console.error("An error ocurred reading the file :" + err.message);
         }
     }
-    return xmlDoc;
+    return xmldoc;
 }
 function test() : any {
     //let select = xpath.useNamespaces({"xmlns": "urn:oasis:names:tc:opendocument:xmlns:container"})
     //select("//xmlns:container/xmlns:rootfiles/xmlns:rootfile", this.containerXmlDoc)
     //xpath.select("//*[local-name(.)='rootfile' and namespace-uri(.)!='fakeuri']", this.containerXmlDoc)
-    let containerFilepath = __dirname + '/../data/currentBook/META-INF/container.xml';
-    let containerXmlDoc = readXMLFile(containerFilepath);
+    let container_filepath = __dirname + '/../data/currentBook/META-INF/container.xml';
+    let container_xmldoc = read_xml_file(container_filepath);
 
-    let rootFiles : Node[] = xpath.select("//*[local-name(.)='rootfile']", containerXmlDoc) as Node[]
-    let rr = rootFiles[0].constructor.name
+    let root_files : Node[] = xpath.select("//*[local-name(.)='rootfile']", container_xmldoc) as Node[]
+    let rr = root_files[0].constructor.name
     console.log(rr)
     let aaa = new DOMImplementation();
-    if (rootFiles.length < 1 || !(rootFiles[0].nodeType == Node.ELEMENT_NODE)) {
+    if (root_files.length < 1 || !(root_files[0].nodeType == Node.ELEMENT_NODE)) {
         // TODO: find file in the current book with extention *.opf
         return;
     }
-    let element = rootFiles[0] as Element
+    let element = root_files[0] as Element
     element.getAttribute("test")
-    if (rootFiles.length > 1) {
+    if (root_files.length > 1) {
         console.warn('WARNING: Only first rootfile is taken')
     }
-    let rootFile = rootFiles[0];
+    let rootFile = root_files[0];
 
     return null;
 }

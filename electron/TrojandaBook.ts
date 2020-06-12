@@ -1,7 +1,7 @@
 
 import * as yauzl from "yauzl"
 //import 'extract-zip' // see: https://www.npmjs.com/package/extract-zip
-const extractZip = require('extract-zip')
+const extract_zip = require('extract-zip')
 import * as path from 'path'
 import * as fs from 'fs-extra'
 //const { parseString } = require('xml2js');
@@ -12,20 +12,20 @@ const ELEMENT_NODE = Node.ELEMENT_NODE;
 
 import { CURRENT_BOOK_PATH } from './Constants'
 
-const getAllFiles = function (dirPath: any): string[] {
-    let files = fs.readdirSync(dirPath)
+const get_all_files = function (dirpath: any): string[] {
+    let files = fs.readdirSync(dirpath)
 
-    let returnFileList : string[] = []
+    let file_list : string[] = []
 
     files.forEach(function (file) {
-        if (fs.statSync(dirPath + "/" + file).isDirectory()) {
-            returnFileList.push(...getAllFiles(dirPath + "/" + file))
+        if (fs.statSync(dirpath + "/" + file).isDirectory()) {
+            file_list.push(...get_all_files(dirpath + "/" + file))
         } else {
-            returnFileList.push(path.join(dirPath, "/", file))
+            file_list.push(path.join(dirpath, "/", file))
         }
     })
 
-    return returnFileList
+    return file_list
 }
 
 const get_children_by_name = function (element: Element, children_tag_name : string) : Array<Element> {
@@ -38,99 +38,99 @@ const get_children_by_name = function (element: Element, children_tag_name : str
     }
     return elements;
 }
-const readXMLFile = function (xmlfilepath: string): Document | undefined {
-    let xmlDoc;
-    if (fs.existsSync(xmlfilepath) && fs.statSync(xmlfilepath).isFile()) {
+const read_xml_file = function (xml_filepath: string): Document | undefined {
+    let xml_doc;
+    if (fs.existsSync(xml_filepath) && fs.statSync(xml_filepath).isFile()) {
         try {
-            let data = fs.readFileSync(xmlfilepath, 'utf-8');
-            console.log("Reading xml file “" + xmlfilepath + "” (size" + data.length + ")...");
+            let data = fs.readFileSync(xml_filepath, 'utf-8');
+            console.log("Reading xml file “" + xml_filepath + "” (size" + data.length + ")...");
             let parser = new DOMParser();
-            xmlDoc = parser.parseFromString(data, "application/xml");
+            xml_doc = parser.parseFromString(data, "application/xml");
         } catch (err) {
             console.error("An error ocurred reading the file :" + err.message);
         }
     }
-    return xmlDoc;
+    return xml_doc;
 }
 class BookTOC {
     title?: string; // String
     author?: string; // String
-    navPoints?: NavPoint[]; // Array
+    nav_points?: NavPoint[]; // Array
 }
 
 export class NavPoint {
     label?: string;
     src?: string;
-    subNavPoints : NavPoint[] = [];
+    sub_nav_points : NavPoint[] = [];
 
-    fullFilepath?: string;
+    full_filepath?: string;
 }
 export class ManifestItem {
     id?: string | null;
     href?: string | null;
-    mediaType?: string | null;
-    fullFilepath?: string;
+    media_type?: string | null;
+    full_filepath?: string;
 }
 type TrojandaBookCallback = (book: TrojandaBook) => void
 
 export class TrojandaBook {
     filepath: string;
     files: string[] = [];
-    contentBaseDir: string = '';
+    content_basedir: string = '';
 
-    manifestItems: ManifestItem[] = []; // here is metadata and all resources
+    manifest_items: ManifestItem[] = []; // here is metadata and all resources
     spine: string[] = []; // resources for linear reading, contain id from manifestItems
 
-    bookTOC?: BookTOC; // type class BookTOC Object
-    bookTitle?: string; // dublicate with bookTOC.title
-    bookAuthor?: string; // dublicate with bookTOC.author
+    book_toc?: BookTOC; // type class BookTOC Object
+    book_title?: string; // dublicate with bookTOC.title
+    book_author?: string; // dublicate with bookTOC.author
 
-    containerXmlDoc?: Document;
-    rootOPFFilepath?: string;
-    rootOPFFileXmlDoc?: Document;
-    tocFilepath?: string; // here is TOC for display
-    tocFileXmlDoc?: Document;
+    container_xml_doc?: Document;
+    root_opf_filepath?: string;
+    root_opf_xmldoc?: Document;
+    toc_filepath?: string; // here is TOC for display
+    toc_xmldoc?: Document;
 
     constructor(filepath: string, onCompleteCallback: TrojandaBookCallback) {
         this.filepath = filepath;
         if (true) {
-            this.clearCurrentBookDir();
-            this.extractCurrentBook(/* this.i.bind(this) */ () => {
-                this.readStructure();
+            this.clear_current_book_dir();
+            this.extract_current_book(/* this.i.bind(this) */ () => {
+                this.init_book();
                 onCompleteCallback(this);
             });
         } else { // read a previously opened book
-            this.readStructure();
+            this.init_book();
             onCompleteCallback(this);
         }
     }
 
-    readStructure() {
+    init_book() {
         //this.printAllFilesInTheBook();
-        this.parseContainerFile()
-        this.determineRootOPFFilepath();
-        this.parseRootOPFFile();
-        this.determineTOCFilepath();
-        this.parseTOCFile();
+        this.parse_container_file()
+        this.determine_root_opf_filepath();
+        this.parse_root_opf_file();
+        this.determine_toc_filepath();
+        this.parse_toc_file();
 
         this.init_book_toc();
         this.init_spine();
     }
 
     init_book_toc() {
-        if (this.tocFileXmlDoc === undefined) {
+        if (this.toc_xmldoc === undefined) {
             return;
         }
         let bookTOC = new BookTOC();
-        bookTOC.title = this.getTextContent("docTitle", this.tocFileXmlDoc);
-        bookTOC.author = this.getTextContent("docAuthor", this.tocFileXmlDoc);
-        let navMap: Element = this.tocFileXmlDoc.getElementsByTagName("navMap")[0];
+        bookTOC.title = this.get_text_content("docTitle", this.toc_xmldoc);
+        bookTOC.author = this.get_text_content("docAuthor", this.toc_xmldoc);
+        let navMap: Element = this.toc_xmldoc.getElementsByTagName("navMap")[0];
         if (navMap) {
-            bookTOC.navPoints = this.create_NavPoints(get_children_by_name(navMap, 'navPoint'))
+            bookTOC.nav_points = this.create_NavPoints(get_children_by_name(navMap, 'navPoint'))
         }
-        this.bookTOC = bookTOC;
-        this.bookTitle = bookTOC.title;
-        this.bookAuthor = bookTOC.author;
+        this.book_toc = bookTOC;
+        this.book_title = bookTOC.title;
+        this.book_author = bookTOC.author;
     }
 
     create_NavPoints(childNodes: Array<Element>): NavPoint[] {
@@ -139,17 +139,17 @@ export class TrojandaBook {
             let node: Element = childNodes[i];
             if (node.tagName === 'navPoint') {
                 let navPoint = new NavPoint();
-                navPoint.label = this.getTextContent('navLabel', node);
-                navPoint.src = this.getAttr('content', 'src', node);
-                navPoint.fullFilepath = path.resolve(this.contentBaseDir, navPoint.src);
-                navPoint.subNavPoints = this.create_NavPoints(get_children_by_name(node, 'navPoint'));
+                navPoint.label = this.get_text_content('navLabel', node);
+                navPoint.src = this.get_element_attr('content', 'src', node);
+                navPoint.full_filepath = path.resolve(this.content_basedir, navPoint.src);
+                navPoint.sub_nav_points = this.create_NavPoints(get_children_by_name(node, 'navPoint'));
                 navPoints.push(navPoint);
             }
         }
         return navPoints;
     }
 
-    getAttr(tagName: string, attrName: string, document : Element) : string {
+    get_element_attr(tagName: string, attrName: string, document : Element) : string {
         let text : string = "";
         let element = document.getElementsByTagName(tagName)[0];
         if (element) {
@@ -161,60 +161,60 @@ export class TrojandaBook {
         return text;
     
     }
-    getTextContent(tagName : string, document : Element | Document) {
+    get_text_content(tagName : string, document : Element | Document) {
         let text = "";
         let element = document.getElementsByTagName(tagName)[0];
         if (element) {
             //text = xpath.select("string(//*[local-name(.)='text'])", element)
-            let textElement = element.getElementsByTagName("text")[0]
-            if (textElement && textElement.textContent !== null) {
-                text = textElement.textContent
+            let text_element = element.getElementsByTagName("text")[0]
+            if (text_element && text_element.textContent !== null) {
+                text = text_element.textContent
             }
         }
         return text;
     }
 
     init_spine() {
-        if (this.rootOPFFileXmlDoc === undefined) {
+        if (this.root_opf_xmldoc === undefined) {
             return;
         }
-        let manifest = this.rootOPFFileXmlDoc.getElementsByTagName('manifest')[0]
+        let manifest = this.root_opf_xmldoc.getElementsByTagName('manifest')[0]
         if (!manifest) {
             console.error("There is no manifest element in the book opf file")
         } else {
-            let manifestItems = [];
+            let manifest_items = [];
             let items = manifest.getElementsByTagName('item')
             for (let i = 0; i < items.length; i++) {
                 let node = items[i]
                 if (node.tagName === 'item') {
-                    let manifestItem = new ManifestItem();
-                    manifestItem.id = node.getAttribute('id');
-                    manifestItem.href = node.getAttribute('href');
-                    manifestItem.mediaType = node.getAttribute('media-type');
+                    let manifest_item = new ManifestItem();
+                    manifest_item.id = node.getAttribute('id');
+                    manifest_item.href = node.getAttribute('href');
+                    manifest_item.media_type = node.getAttribute('media-type');
                     let valid = true;
-                    if (manifestItem.id === null || manifestItem.id === "") {
+                    if (manifest_item.id === null || manifest_item.id === "") {
                         console.warn("There is no id attribute for item element");
                         valid = false;
                     }
-                    if (manifestItem.href === null || manifestItem.href === "") {
+                    if (manifest_item.href === null || manifest_item.href === "") {
                         console.warn("There is no href attribute for item element");
                         valid = false;
                     }
-                    if (valid && manifestItem.href !== null) {
-                        manifestItem.fullFilepath = path.resolve(this.contentBaseDir, manifestItem.href);
-                        manifestItems.push(manifestItem);
+                    if (valid && manifest_item.href !== null) {
+                        manifest_item.full_filepath = path.resolve(this.content_basedir, manifest_item.href);
+                        manifest_items.push(manifest_item);
                     }
                 }
             }
-            this.manifestItems = manifestItems;
+            this.manifest_items = manifest_items;
         }
 
-        let spineElement = this.rootOPFFileXmlDoc.getElementsByTagName('spine')[0]
-        if (!spineElement) {
+        let spine_element = this.root_opf_xmldoc.getElementsByTagName('spine')[0]
+        if (!spine_element) {
             console.error("There is no spine element in the book opf file")
         } else {
             let spine = [];
-            let items = spineElement.getElementsByTagName('itemref')
+            let items = spine_element.getElementsByTagName('itemref')
             for (let i = 0; i < items.length; i++) {
                 let node = items[i]
                 if (node.tagName === 'itemref') {
@@ -230,55 +230,55 @@ export class TrojandaBook {
         }
     }
 
-    parseContainerFile() : void {
-        let containerFilepath = path.resolve(CURRENT_BOOK_PATH, 'META-INF', 'container.xml');
-        this.containerXmlDoc = readXMLFile(containerFilepath);
+    parse_container_file() : void {
+        let container_filepath = path.resolve(CURRENT_BOOK_PATH, 'META-INF', 'container.xml');
+        this.container_xml_doc = read_xml_file(container_filepath);
     }
 
-    parseRootOPFFile() : void {
-        if (this.rootOPFFilepath !== undefined) {
-            this.rootOPFFileXmlDoc = readXMLFile(this.rootOPFFilepath);
+    parse_root_opf_file() : void {
+        if (this.root_opf_filepath !== undefined) {
+            this.root_opf_xmldoc = read_xml_file(this.root_opf_filepath);
         }
     }
-    parseTOCFile() : void {
-        if (this.tocFilepath !== undefined) {
-            this.tocFileXmlDoc = readXMLFile(this.tocFilepath);
+    parse_toc_file() : void {
+        if (this.toc_filepath !== undefined) {
+            this.toc_xmldoc = read_xml_file(this.toc_filepath);
         }
     }
 
-    determineTOCFilepath() : string | undefined {
-        if (this.rootOPFFileXmlDoc === undefined) {
+    determine_toc_filepath() : string | undefined {
+        if (this.root_opf_xmldoc === undefined) {
             return;
         }
-        let spineElements = this.rootOPFFileXmlDoc.getElementsByTagName('spine')
-        if (spineElements.length < 0) {
+        let spine_elements = this.root_opf_xmldoc.getElementsByTagName('spine')
+        if (spine_elements.length < 0) {
             console.error("There is invalide OPF file. No spine element");
             return;
         }
-        if (spineElements.length > 1) {
+        if (spine_elements.length > 1) {
             console.warn("There is more than one spine elements. Select first");
         }
-        let spineElement = spineElements[0];
-        let tocId = spineElement.getAttribute('toc');
-        if (tocId == null || tocId === '') {
+        let spine_element = spine_elements[0];
+        let toc_id = spine_element.getAttribute('toc');
+        if (toc_id == null || toc_id === '') {
             console.error("There is no toc attribute in the spine element")
             return;
         }
         // let tocItemElement = this.rootOPFFileXmlDoc.getElementById(tocId) // throw Refference Exception
-        let tocItemNode : Node[] = xpath.select("//*[local-name(.)='manifest']/*[local-name(.)='item' and @id='" + tocId + "']", this.rootOPFFileXmlDoc) as Node[];
-        if (tocItemNode.length < 0 || tocItemNode[0].nodeType !== Node.ELEMENT_NODE) {
-            console.error("There is no toc item element with the '" + tocId + "' id ")
+        let toc_item_node : Node[] = xpath.select("//*[local-name(.)='manifest']/*[local-name(.)='item' and @id='" + toc_id + "']", this.root_opf_xmldoc) as Node[];
+        if (toc_item_node.length < 0 || toc_item_node[0].nodeType !== Node.ELEMENT_NODE) {
+            console.error("There is no toc item element with the '" + toc_id + "' id ")
             return;
         }
-        let tocItemElement = tocItemNode[0] as Element
-        let tocFilepath = tocItemElement.getAttribute('href');
-        if (tocFilepath == null || tocFilepath === '') {
+        let toc_item_element = toc_item_node[0] as Element
+        let toc_filepath = toc_item_element.getAttribute('href');
+        if (toc_filepath == null || toc_filepath === '') {
             console.error("There is no href attribute in the item element")
             return;
         }
         // pash is related to the location of *.OPF file
-        this.tocFilepath = path.resolve(this.contentBaseDir, tocFilepath);
-        return this.tocFilepath
+        this.toc_filepath = path.resolve(this.content_basedir, toc_filepath);
+        return this.toc_filepath
         /* 
         //let select = xpath.useNamespaces({"xmlns": "http://www.idpf.org/2007/opf"})
         //let tocId = xpath.select("//xmlns:package/xmlns:spine/@toc", this.rootOPFFileXmlDoc)
@@ -291,37 +291,37 @@ export class TrojandaBook {
         */
     }
 
-    determineRootOPFFilepath() : string | undefined {
+    determine_root_opf_filepath() : string | undefined {
         //let select = xpath.useNamespaces({"xmlns": "urn:oasis:names:tc:opendocument:xmlns:container"})
         //select("//xmlns:container/xmlns:rootfiles/xmlns:rootfile", this.containerXmlDoc)
         //xpath.select("//*[local-name(.)='rootfile' and namespace-uri(.)!='fakeuri']", this.containerXmlDoc)
 
-        let rootFiles : Node[] = xpath.select("//*[local-name(.)='rootfile']", this.containerXmlDoc) as Node[]
-        if (rootFiles.length < 1 || rootFiles[0].nodeType !== Node.ELEMENT_NODE) {
+        let root_files : Node[] = xpath.select("//*[local-name(.)='rootfile']", this.container_xml_doc) as Node[]
+        if (root_files.length < 1 || root_files[0].nodeType !== Node.ELEMENT_NODE) {
             // TODO: find file in the current book with extention *.opf
             return;
         }
-        if (rootFiles.length > 1) {
+        if (root_files.length > 1) {
             console.warn('WARNING: Only first rootfile is taken')
         }
-        let rootFile = rootFiles[0] as Element;
-        let rootfileFullPath = rootFile.getAttribute('full-path');
-        let rootfileMediaType = rootFile.getAttribute('media-type');
-        if (rootfileMediaType != 'application/oebps-package+xml') {
-            console.warn("WARNING: media-type should be: application/oebps-package+xml, but it is:" + rootfileMediaType)
+        let root_file = root_files[0] as Element;
+        let root_filepath = root_file.getAttribute('full-path');
+        let root_file_media_type = root_file.getAttribute('media-type');
+        if (root_file_media_type != 'application/oebps-package+xml') {
+            console.warn("WARNING: media-type should be: application/oebps-package+xml, but it is:" + root_file_media_type)
         }
-        if (rootfileFullPath === null || rootfileFullPath === '') {
+        if (root_filepath === null || root_filepath === '') {
             console.warn("WARNING: rootfile full-path attribute is absant or empty")
         }
-        if (rootfileFullPath !== null) {
-            this.rootOPFFilepath = path.resolve(CURRENT_BOOK_PATH, rootfileFullPath);
-            this.contentBaseDir = path.dirname(this.rootOPFFilepath);
+        if (root_filepath !== null) {
+            this.root_opf_filepath = path.resolve(CURRENT_BOOK_PATH, root_filepath);
+            this.content_basedir = path.dirname(this.root_opf_filepath);
         }
-        return this.rootOPFFilepath;
+        return this.root_opf_filepath;
     }
 
-    printAllFilesInTheBook() {
-        this.files = getAllFiles(CURRENT_BOOK_PATH);
+    print_all_files_in_the_book() {
+        this.files = get_all_files(CURRENT_BOOK_PATH);
         console.log('All book files (size: ' + this.files.length + '):')
         for (const file of this.files) {
             console.log('    ' + file);
@@ -329,7 +329,7 @@ export class TrojandaBook {
     }
 
 
-    clearCurrentBookDir() {
+    clear_current_book_dir() {
         try {
             fs.emptyDirSync(CURRENT_BOOK_PATH)
             console.log('success!')
@@ -339,8 +339,8 @@ export class TrojandaBook {
         }
     }
 
-    extractCurrentBook(callbackOnComplete : Function) {
-        extractZip(this.filepath, { dir: CURRENT_BOOK_PATH }, (err: any) => {
+    extract_current_book(callbackOnComplete : Function) {
+        extract_zip(this.filepath, { dir: CURRENT_BOOK_PATH }, (err: any) => {
             if (err) {
                 console.error(err)
             } else {
@@ -349,14 +349,14 @@ export class TrojandaBook {
         })
     }
 
-    printBookEntries() {
-        yauzl.open(this.filepath, function (err, zipfile) {
+    print_book_entries() {
+        yauzl.open(this.filepath, function (err, zip_file) {
             if (err) throw err;
-            if (zipfile !== undefined) {
-                zipfile.on("error", function (err) {
+            if (zip_file !== undefined) {
+                zip_file.on("error", function (err) {
                     throw err;
                 });
-                zipfile.on("entry", function (entry) {
+                zip_file.on("entry", function (entry) {
                     console.log('-----------------');
                     console.log(entry.fileName + ', time:' + entry.getLastModDate());
                     console.log(entry);
