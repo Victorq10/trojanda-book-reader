@@ -2,7 +2,7 @@
 
 // import { ipcRenderer } from "electron"
 const { ipcRenderer } = require('electron')
-import { TrojandaBook, NavPoint } from './TrojandaBook';
+import { TrojandaBook, NavPoint, ManifestItem } from './TrojandaBook';
 //import { TrojandaBookApplication } from './TrojandaBookApplication';
 //const trojandaBookApplication = global.trojandaBookApplicationInstance as TrojandaBookApplication;
 
@@ -11,17 +11,12 @@ import * as fs from 'fs-extra'
 
 // It has the same sandbox as a Chrome extension.
 window.addEventListener('DOMContentLoaded', () => {
-    const replaceText = (selector : string, text : any) => {
-      const element = document.getElementById(selector)
-      if (element) element.innerText = text
-    }
-
     // convert relative pathes to absolete
     let base_dir = location.href;
     base_dir = base_dir.substring(0, base_dir.lastIndexOf('/'))
-    const setBaseDir = (tagName : string, attrName : string) => {
+    const setBaseDir = (tagName: string, attrName: string) => {
         let elements = document.getElementsByTagName(tagName);
-        for(let i = 0; i < elements.length; i++) {
+        for (let i = 0; i < elements.length; i++) {
             let elmt = elements[i];
             let attrValue = elmt.getAttribute(attrName);
             if (attrValue && attrValue.indexOf(':') === -1) {
@@ -32,59 +27,59 @@ window.addEventListener('DOMContentLoaded', () => {
     setBaseDir('link', 'href');
     setBaseDir('script', 'src');
     setBaseDir('a', 'href');
-/*     let links = document.getElementsByTagName('link');
-    for(let i = 0; i < links.length; i++) {
-        let link = links[0];
-        let attr = link.getAttribute('href');
-        if (attr) {
-            link.setAttribute('href', base_dir + '/' + attr);
-        }
-    }
- */
 
+    const replaceText = (selector: string, text: any) => {
+        const element = document.getElementById(selector)
+        if (element) element.innerText = text
+    }
     // display version information
-    let versions : any = process.versions;
+    let versions: any = process.versions;
     for (const type of ['chrome', 'node', 'electron']) {
         replaceText(`${type}-version`, versions[type])
     }
 
     // init buttons events
-    const addEvent = (elmt_id : string, handler : Function) => {
+    const addEvent = (elmt_id: string, handler: Function) => {
         const btn = document.getElementById(elmt_id)
         if (btn !== null) {
-            btn.addEventListener('click', (event : MouseEvent) => handler(event))
+            btn.addEventListener('click', (event: MouseEvent) => handler(event))
         }
     }
-    addEvent('js-open-book-btn', (event : MouseEvent) => {
+    addEvent('js-open-book-btn', (event: MouseEvent) => {
         ipcRenderer.send('open-book', 'ping')
     });
-    addEvent('js-toc-content-btn', (event : MouseEvent) => {
+    addEvent('js-toc-content-btn', (event: MouseEvent) => {
         show_content_by_id('js-toc-content');
     });
-    addEvent('js-prev-chapter-btn', (event : MouseEvent) => {
-        console.log('TODO: wait for implementation.');
+    addEvent('js-prev-chapter-btn', (event: MouseEvent) => {
+        if (current_book) {
+            current_book.display_prev_spine();
+        }
     });
-    addEvent('js-next-chapter-btn', (event : MouseEvent) => {
-        console.log('TODO: wait for implementation.');
+    addEvent('js-next-chapter-btn', (event: MouseEvent) => {
+        if (current_book) {
+            current_book.display_next_spine();
+        }
     });
-    addEvent('js-reading-content-btn', (event : MouseEvent) => {
+    addEvent('js-reading-content-btn', (event: MouseEvent) => {
         show_content_by_id('js-reading-content');
     });
-    addEvent('js-book-info-content-btn', (event : MouseEvent) => {
+    addEvent('js-book-info-content-btn', (event: MouseEvent) => {
         show_content_by_id('js-book-info-content');
     });
-    addEvent('js-library-content-btn', (event : MouseEvent) => {
+    addEvent('js-library-content-btn', (event: MouseEvent) => {
         show_content_by_id('js-library-content');
     });
-    addEvent('js-settings-content-btn', (event : MouseEvent) => {
+    addEvent('js-settings-content-btn', (event: MouseEvent) => {
         show_content_by_id('js-settings-content');
     });
     show_content_by_id('js-toc-content');
 });
 
-let content_ids = ['js-toc-content', 'js-reading-content', 'js-book-info-content', 
-        'js-library-content-btn', 'js-settings-content'];
-function show_content_by_id(elmt_id : string) : void {
+let content_ids = ['js-toc-content', 'js-reading-content', 'js-book-info-content',
+    'js-library-content-btn', 'js-settings-content'];
+
+function show_content_by_id(elmt_id: string): void {
     for (const content_id of content_ids) {
         const elmt = document.getElementById(content_id);
         if (content_id === elmt_id) {
@@ -95,43 +90,13 @@ function show_content_by_id(elmt_id : string) : void {
     }
 }
 
-let trojandaBook : TrojandaBook;
-
-ipcRenderer.on('display-book', (event : any, trojandaBookArg : TrojandaBook) => {
-    trojandaBook = trojandaBookArg;
-    console.log(trojandaBook); // prints "pong"
-    const titleElement = document.getElementById('title');
-    const authorElement = document.getElementById('author');
-    const bookNavMapElement = document.getElementById('bookNavMap');
-    if (titleElement && authorElement && bookNavMapElement) {
-        bookNavMapElement.innerHTML = '';
-        titleElement.textContent = trojandaBook.bookTitle || "";
-        authorElement.textContent = trojandaBook.bookAuthor || "";
-        if (trojandaBook.bookTOC && trojandaBook.bookTOC.navPoints) {
-            bookNavMapElement.appendChild(create_list_from_navPoint(trojandaBook.bookTOC.navPoints));
-        }
-    }
+ipcRenderer.on('display-book', (event: any, trojanda_book: TrojandaBook) => {
+    console.log(trojanda_book); // prints "pong"
+    current_book = new CurrentBookHelper(trojanda_book);
+    current_book.init_and_display_toc_content();
 })
 
-function create_list_from_navPoint(navPoints : NavPoint[]) : HTMLUListElement {
-    let ulElement = document.createElement('ul');
-    for (const navPoint of navPoints) {
-        let liElement = document.createElement('li');
-        let aElement = document.createElement('a');
-        aElement.textContent = navPoint.label || "";
-        aElement.href = navPoint.fullFilepath || ""; //navPoint.src;
-        aElement.dataset.baseDir = navPoint.fullFilepath.substring(0, navPoint.fullFilepath.lastIndexOf('/') + 1);
-        liElement.appendChild(aElement);
-        if (navPoint.subNavPoints && navPoint.subNavPoints.length > 0) {
-            let subUlElement = create_list_from_navPoint(navPoint.subNavPoints);
-            liElement.appendChild(subUlElement);
-        }
-        ulElement.appendChild(liElement);
-    }
-    return ulElement;
-}
-
-ipcRenderer.on('asynchronous-reply', (event : any, arg : any) => {
+ipcRenderer.on('asynchronous-reply', (event: any, arg: any) => {
     console.log(arg) // prints "pong"
 });
 
@@ -140,39 +105,156 @@ document.addEventListener('click', (event) => {
     if (target.tagName === 'A') {
         event.preventDefault()
         event.stopPropagation();
-        let a = target;
-        let href = target.getAttribute('href')
-        console.log('An a element was clicked, text:' + target.textContent + ', href:' + href)
-        try {
-            href = href.replace('file://','') // existed link on the page with full path
-            fs.readFile(href, 'utf-8').then((data) => {
-                console.log("Reading file “" + href + "” (size" + data.length + ")...");
-                if (target.dataset.baseDir) {
-                    let base = document.getElementsByTagName('base')[0] as HTMLElement;
-                    base.setAttribute('href', target.dataset.baseDir)
-                    //base.setAttribute('href', '../data/currentBook/OEBPS/Text/')
-                    //base.setAttribute('href', '../data/currentBook/')
-                }
-                let bookContentElement = document.getElementById('js-reading-content');
-                bookContentElement.innerHTML = data
-                // remove all style elements from the chapter
-                const removeElemens = (tagName: string) => {
-                    let elements = bookContentElement.getElementsByTagName(tagName);
-                    for(let i = 0; i < elements.length; i++) {
-                        elements[i].remove();
-                    }
-                }
-                removeElemens('link');
-                removeElemens('style');
-                removeElemens('meta');
-                removeElemens('title');
-
-                show_content_by_id('js-reading-content')
-            }).catch((err) => {
-                console.log('Error on reading “' + href + '” file: ' + err.message);
-            });
-        } catch (err) {
-            console.error("An error ocurred reading the file :" + err.message);
-        }
+        current_book.load_and_display_link(target);
     }
 });
+
+let current_spine_src: string;
+let current_book: CurrentBookHelper;
+class CurrentBookHelper {
+    trojanda_book: TrojandaBook;
+    spine_manifest_items: Array<ManifestItem> = [];
+
+    constructor(trojanda_book: TrojandaBook) {
+        this.trojanda_book = trojanda_book
+        for (const manifest_item_id of trojanda_book.spine) {
+            let found = false;
+            for (const manifest_item of trojanda_book.manifestItems) {
+                if (manifest_item.id === manifest_item_id) {
+                    found = true;
+                    this.spine_manifest_items.push(manifest_item);
+                    break;
+                }
+            }
+            if (!found) {
+                console.warn('Can not find manifest item by id :' + manifest_item_id)
+            }
+        }
+        console.log(this);
+    }
+
+    init_and_display_toc_content(): void {
+        const titleElement = document.getElementById('title');
+        const authorElement = document.getElementById('author');
+        const bookNavMapElement = document.getElementById('bookNavMap');
+        if (titleElement && authorElement && bookNavMapElement) {
+            bookNavMapElement.innerHTML = '';
+            titleElement.textContent = this.trojanda_book.bookTitle || "";
+            authorElement.textContent = this.trojanda_book.bookAuthor || "";
+            if (this.trojanda_book.bookTOC && this.trojanda_book.bookTOC.navPoints) {
+                bookNavMapElement.appendChild(this.create_list_from_navPoint(this.trojanda_book.bookTOC.navPoints));
+            }
+        }
+    }
+
+    create_list_from_navPoint(navPoints: NavPoint[]): HTMLUListElement {
+        let ul_elmt = document.createElement('ul');
+        for (const navPoint of navPoints) {
+            let li_elmt = document.createElement('li');
+            let a_elmt = document.createElement('a');
+            a_elmt.textContent = navPoint.label || "";
+            a_elmt.href = navPoint.fullFilepath || ""; //navPoint.src;
+            a_elmt.dataset.spineSrc = navPoint.src;
+            li_elmt.appendChild(a_elmt);
+            if (navPoint.subNavPoints && navPoint.subNavPoints.length > 0) {
+                let subUlElement = this.create_list_from_navPoint(navPoint.subNavPoints);
+                li_elmt.appendChild(subUlElement);
+            }
+            ul_elmt.appendChild(li_elmt);
+        }
+        return ul_elmt;
+    }
+
+    remove_elemens(elmt: HTMLElement, tagName: string) {
+        let elements = elmt.getElementsByTagName(tagName);
+        for (let i = 0; i < elements.length; i++) {
+            elements[i].remove();
+        }
+    }
+
+    async load_and_display_file_content(filepath: string): Promise<any> {
+        return await fs.readFile(filepath, 'utf-8').then((data) => {
+            console.log("Reading file “" + filepath + "” (size: " + data.length + ")");
+            let reading_content_elmt = document.getElementById('js-reading-content');
+
+            let base_dir = filepath.substring(0, filepath.lastIndexOf('/') + 1)
+            let base = document.getElementsByTagName('base')[0] as HTMLElement;
+            base.setAttribute('href', base_dir)
+            //base.setAttribute('href', '../data/currentBook/OEBPS/Text/')
+            //base.setAttribute('href', '../data/currentBook/')
+
+            reading_content_elmt.innerHTML = data
+            // remove all style elements from the chapter
+            this.remove_elemens(reading_content_elmt, 'link');
+            this.remove_elemens(reading_content_elmt, 'style');
+            this.remove_elemens(reading_content_elmt, 'meta');
+            this.remove_elemens(reading_content_elmt, 'title');
+            show_content_by_id('js-reading-content')
+        });
+    }
+
+    load_and_display_manifestItem(manifest_item: ManifestItem) {
+        let href = manifest_item.fullFilepath;
+        console.log('Opening a ManifestItem “' + manifest_item.id + '”')
+        let filepath = href.replace('file://', '') // existed link on the page with full path
+        this.load_and_display_file_content(filepath)
+            .then(() => {
+                if (manifest_item.href) {
+                    current_spine_src = manifest_item.href;
+                }
+            })
+            .catch((err) => {
+                console.log('Error on reading “' + filepath + '” file: ' + err.message);
+            });
+    }
+
+    load_and_display_link(target: HTMLElement): void {
+        let href = target.getAttribute('href')
+        console.log('An a element was clicked on “' + target.textContent + '” link, href:' + href)
+        let filepath = href.replace('file://', '') // existed link on the page with full path
+        this.load_and_display_file_content(filepath)
+            .then(() => {
+                if (target.dataset.spineSrc) {
+                    current_spine_src = target.dataset.spineSrc;
+                }
+            })
+            .catch((err) => {
+                console.log('Error on reading “' + filepath + '” file: ' + err.message);
+            });
+    }
+
+    get_spine_manifest_item_by_href(manifest_item_href: string): number {
+        let current_idx = -1;
+        let i = 0;
+        for (const spine_manifest_items of this.spine_manifest_items) {
+            if (spine_manifest_items.href === manifest_item_href) {
+                current_idx = i;
+                break;
+            }
+            i++;
+        }
+        if (current_idx === -1) {
+            console.warn('There is no current_spine_src among spine_manifest_items')
+        }
+        return current_idx;
+    }
+
+    display_prev_spine() {
+        const current_spine_idx = this.get_spine_manifest_item_by_href(current_spine_src);
+        if (current_spine_idx > 0 && this.spine_manifest_items.length > 0) {
+            let next_spine_manifest_item = this.spine_manifest_items[current_spine_idx - 1];
+            this.load_and_display_manifestItem(next_spine_manifest_item);
+        }
+    }
+
+    display_next_spine() {
+        const current_spine_idx = this.get_spine_manifest_item_by_href(current_spine_src);
+        if ((current_spine_idx + 1) < this.spine_manifest_items.length) {
+            let next_spine_manifest_item = this.spine_manifest_items[current_spine_idx + 1];
+            this.load_and_display_manifestItem(next_spine_manifest_item);
+        }
+    }
+
+
+}
+
