@@ -26,8 +26,6 @@ npm run watch
 
 Open Debuger drop-down menu and select `Debug Main Process (trojanda-book-reader)`
 
-Enjoy!!!
-
 USED VERSIONS
 -------------
 ```
@@ -62,14 +60,22 @@ VESUAL STUDIO CODE CONFIGURATION
 Press `ctrl+shift+P` in the `Visual Studio Code` and start to type `sqlite` than select `SQLite: Open Database`. 
 Select `testBook.db` or `Books.db` from the drop-down. Repeate for anothor database.
 An `SQLITE EXPLORER` will be appear in the left side of you `Visual Studio Code` in the `Explorer`.
-Enjoy!!!
 
 ##### Visual Studio Code plugins:
 * A “[formate: CSS/LESS/SCSS formatter](https://marketplace.visualstudio.com/items?itemName=MikeBovenlander.formate)” plugin to format css files.
 * A [SQLite](https://marketplace.visualstudio.com/items?itemName=alexcvzz.vscode-sqlite) 
   plugin to view SQLite database (it require `sqlite3` command line tool).
 
+NAME CONVENTIONS
+================
+snale cace (or Underscope) is used for variable, instances, parameters and function names. 
 
+CamelCaces is used for Types, Classes, Enums etc.
+
+See: [Snake case](https://en.wikipedia.org/wiki/Snake_case) on Wikipedia. and [Python: Naming Conventions](https://www.python.org/dev/peps/pep-0008/#naming-conventions)
+
+At least one study found that readers can recognise snake case values more quickly than camelCase:
+[Sharif, Bonita; Maletic, Jonathan I. (2010). "An Eye Tracking Study on camelCase and under_score Identifier Styles"](http://www.cs.kent.edu/~jmaletic/papers/ICPC2010-CamelCaseUnderScoreClouds.pdf)
 
 RESEARCH INFORMATION
 ====================
