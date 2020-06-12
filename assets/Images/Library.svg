@@ -36,16 +36,16 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="11.313709"
-     inkscape:cx="45.868357"
-     inkscape:cy="30.909755"
+     inkscape:cx="14.755661"
+     inkscape:cy="30.291037"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
      units="px"
-     inkscape:window-width="1848"
-     inkscape:window-height="1012"
-     inkscape:window-x="72"
-     inkscape:window-y="1111"
+     inkscape:window-width="1920"
+     inkscape:window-height="1043"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
      inkscape:window-maximized="1" />
   <metadata
      id="metadata4016">
@@ -55,7 +55,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -65,61 +65,61 @@
      id="layer1"
      transform="translate(0,-284.3)">
     <rect
-       style="fill:#ffcc00;fill-opacity:1;stroke:#000000;stroke-width:0.38772941;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="fill:#ffcc00;fill-opacity:1;stroke:#000000;stroke-width:0.3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect5160"
        width="2.6548982"
        height="8.4312611"
-       x="2.1453846"
-       y="286.70398" />
+       x="1.8647516"
+       y="286.96121" />
     <rect
-       style="fill:#00c6ff;fill-opacity:1;stroke:#000000;stroke-width:0.40000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="fill:#00c8ff;fill-opacity:1;stroke:#000000;stroke-width:0.3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect6626"
        width="2.6426275"
        height="7.7407932"
-       x="5.5658879"
-       y="287.36493" />
+       x="5.285255"
+       y="287.62216" />
     <rect
-       style="fill:#00c6ff;fill-opacity:1;stroke:#000000;stroke-width:0.43571979;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="fill:#00c8ff;fill-opacity:1;stroke:#000000;stroke-width:0.3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect6628"
        width="2.4555385"
        height="9.5180111"
-       x="8.9568701"
-       y="285.63449" />
+       x="8.6762371"
+       y="285.89172" />
     <text
        xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:1.8445847px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.04611462"
-       x="-314.83221"
-       y="3.815501"
+       style="font-style:normal;font-weight:normal;font-size:1.8445847px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.046;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+       x="-315.10736"
+       y="3.5531125"
        id="text6632"
        transform="matrix(0,-0.9349883,1.0695321,0,0,0)"><tspan
          sodipodi:role="line"
          id="tspan6630"
-         x="-314.83221"
-         y="3.815501"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Konvalija;-inkscape-font-specification:Konvalija;stroke-width:0.04611462">Trojanda</tspan></text>
+         x="-315.10736"
+         y="3.5531125"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Konvalija;-inkscape-font-specification:Konvalija;stroke-width:0.046;stroke:#000000;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none">Trojanda</tspan></text>
     <text
        xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:2.13584566px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.05339614"
-       x="-294.47455"
-       y="7.6568108"
+       style="font-style:normal;font-weight:normal;font-size:2.13584566px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.05339614;stroke-opacity:1;"
+       x="-294.73178"
+       y="7.3761778"
        id="text6636"
        transform="rotate(-90)"><tspan
          sodipodi:role="line"
          id="tspan6634"
-         x="-294.47455"
-         y="7.6568108"
-         style="stroke-width:0.05339614;-inkscape-font-specification:Konvalija;font-family:Konvalija;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">Book</tspan></text>
+         x="-294.73178"
+         y="7.3761778"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Konvalija;-inkscape-font-specification:Konvalija;stroke-width:0.05339614;stroke:#000000;stroke-opacity:1;">Book</tspan></text>
     <text
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.99684751px;line-height:1.25;font-family:Konvalija;-inkscape-font-specification:Konvalija;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.04992119"
-       x="-294.55844"
-       y="10.91405"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:1.99684751px;line-height:1.25;font-family:Konvalija;-inkscape-font-specification:Konvalija;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.05;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+       x="-294.81567"
+       y="10.633417"
        id="text6640"
        transform="rotate(-90)"><tspan
          sodipodi:role="line"
          id="tspan6638"
-         x="-294.55844"
-         y="10.91405"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Konvalija;-inkscape-font-specification:Konvalija;stroke-width:0.04992119">Reader</tspan></text>
+         x="-294.81567"
+         y="10.633417"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Konvalija;-inkscape-font-specification:Konvalija;stroke-width:0.05;stroke:#000000;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none">Reader</tspan></text>
   </g>
 </svg>
