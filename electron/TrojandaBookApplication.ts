@@ -69,7 +69,7 @@ export class TrojandaBookApplication {
 
         // Create the browser window.
         this.win = new BrowserWindow(windowOptions);
-        this.win.title = 'Trojanda Reader'
+        this.win.title = 'Trojanda Book Reader'
         // and load the index.html of the app.
         this.win.loadFile(path.join(APP_ASSETS_DIR, 'index.html'))
 
