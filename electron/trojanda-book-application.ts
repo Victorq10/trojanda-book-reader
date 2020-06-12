@@ -2,9 +2,9 @@ import { BrowserWindow, Menu, MenuItem, Tray, OpenDialogReturnValue, dialog } fr
 import * as path from 'path'
 import * as fs from 'fs'
 
-import './Constants'
-import { APP_ASSETS_DIR, APP_HOME_DIR, APPLICATION_INDEX_FILE } from "./Constants";
-import { TrojandaBook } from './TrojandaBook'
+import './constants'
+import { APP_ASSETS_DIR, APP_HOME_DIR, APPLICATION_INDEX_FILE } from "./constants";
+import { TrojandaBook } from './trojanda-book'
 import { test_create_db, init_db } from "./db";
 
 

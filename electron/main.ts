@@ -1,5 +1,5 @@
 import { app, BrowserWindow, ipcMain } from "electron"
-import { TrojandaBookApplication } from "./TrojandaBookApplication";
+import { TrojandaBookApplication } from "./trojanda-book-application";
 
 
 const trojanda_book_application = new TrojandaBookApplication();

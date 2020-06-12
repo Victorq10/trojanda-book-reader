@@ -2,8 +2,8 @@
 
 // import { ipcRenderer } from "electron"
 const { ipcRenderer } = require('electron')
-import { TrojandaBook, NavPoint, ManifestItem } from './TrojandaBook';
-//import { TrojandaBookApplication } from './TrojandaBookApplication';
+import { TrojandaBook, NavPoint, ManifestItem } from './trojanda-book';
+//import { TrojandaBookApplication } from './trojanda-book-application';
 //const trojandaBookApplication = global.trojandaBookApplicationInstance as TrojandaBookApplication;
 
 import * as path from 'path'

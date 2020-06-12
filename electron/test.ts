@@ -3,9 +3,9 @@ import { app, BrowserWindow, Menu, MenuItem, ipcMain, Tray, OpenDialogReturnValu
     dialog, remote } from "electron"
 import * as path from 'path'
 import * as fs from 'fs'
-import './Constants'
-import { APP_ASSETS_DIR, APP_HOME_DIR } from "./Constants";
-import { TrojandaBook } from './TrojandaBook'
+import './constants'
+import { APP_ASSETS_DIR, APP_HOME_DIR } from "./constants";
+import { TrojandaBook } from './trojanda-book'
 
 
 import {DOMParser, DOMImplementation, DOMParserStatic} from 'xmldom';

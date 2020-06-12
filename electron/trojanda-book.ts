@@ -10,7 +10,7 @@ import * as xpath from 'xpath';
 const Node = require('./../node_modules/xmldom/lib/dom').Node;
 const ELEMENT_NODE = Node.ELEMENT_NODE;
 
-import { CURRENT_BOOK_PATH } from './Constants'
+import { CURRENT_BOOK_PATH } from './constants'
 
 const get_all_files = function (dirpath: any): string[] {
     let files = fs.readdirSync(dirpath)

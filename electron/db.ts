@@ -1,7 +1,7 @@
 const Database = require('better-sqlite3');
 import * as fs from 'fs';
 
-import { APP_DB_FILEPATH, APP_DATA_DIR } from './Constants';
+import { APP_DB_FILEPATH, APP_DATA_DIR } from './constants';
 
 
 export function init_db() {
