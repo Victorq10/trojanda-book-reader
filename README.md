@@ -3,7 +3,9 @@ trojanda-book-reader
 
 Trojanda Book Reader — a ePub reader application. It's written on Electron with usages TypeScript.
 
-![Trojanda Book Reader](screenshots/Trojanda-book-reader_at_2020-06-12_22-37-56.png)
+![Trojanda Book Reader](Trojanda-book-reader_dark-mode_at_2020-06-13_22-32-39.png)
+
+![Trojanda Book Reader](Trojanda-book-reader_light-mode_2020-06-13_22-31-22.png)
 
 INSTALLATION
 ------------
@@ -118,5 +120,6 @@ https://matthewhorne.me/setup-typescript-project/
 https://sqlite.org/cli.html
 https://derickbailey.com/2016/03/09/creating-a-true-singleton-in-node-js-with-es6-symbols/
 https://nodejs.org/api/esm.html#esm_writing_dual_packages_while_avoiding_or_minimizing_hazards
+https://css-tricks.com/examples/WebKitScrollbars/
 
 

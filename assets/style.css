@@ -1,9 +1,97 @@
 * {
     font-family: 'Konvalija', 'Trojanda UI', Arial, Helvetica, sans-serif;
 }
+
+html, html body {
+    display: flex;
+    flex-flow: column nowrap;
+    flex-direction: column;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    width: auto;
+    max-width: initial;
+}
+
 a {
     text-decoration: none;
 }
+
+/* Let's get this party started */
+::-webkit-scrollbar {
+    width: 16px;
+}
+/* Track */
+::-webkit-scrollbar-track {
+    background-color: #AAAAAA70;
+    border-radius: 2px;
+}
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background-color: #a1a1a1FF;
+    border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:window-inactive {
+    background-color: #a1a1a1FF;
+    border-radius: 2px;
+}
+
+
+
+
+#js-application-menu {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+#js-application-menu #menu-bar {
+    display: inline-flex;
+    background-color: #aaaaaa70;
+    border-radius: 0 0 5px 5px;
+}
+#js-application-menu button:first-child {
+    border-bottom-left-radius: 5px;
+}
+#js-application-menu button:last-child {
+    border-bottom-right-radius: 5px;
+}
+#js-application-menu button:focus {
+    outline   : none;
+    box-shadow: none;
+}
+#js-application-menu button:hover {
+    background-color: #a1a1a160;
+}
+#js-application-menu button {
+    padding         : 1px 3px;
+    border-width    : 0;
+    background-color: #0000;
+    cursor          : pointer;
+}
+#js-application-menu button>img {
+    filter: grayscale(1)
+}
+
+
+#js-application-content {
+    flex      : auto;
+    overflow-y: scroll;
+    margin    : 10px 1px 0 0;
+    padding   : 30px;
+}
+
+#js-application-content .application-content-section {
+    max-width: 800px;
+    padding  : 1em;
+    margin   : 0 auto;
+}
+
+
+
+
+
 html.contrast #img-high-contrast {
     display: none;
 }
@@ -35,9 +123,9 @@ body {
     font-family: Open Sans, Arial;
     color      : #454545;
     font-size  : 28px;
-    margin     : 0 auto; /* 2em auto */
-    max-width  : 800px;
-    padding    : 1em;
+    margin     : 0 auto;
+    /* max-width  : 800px; */
+    /* padding    : 1em; */
     line-height: 1.4;
     text-align : justify
 }

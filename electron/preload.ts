@@ -12,7 +12,7 @@ import * as fs from 'fs-extra'
 let current_spine_src: string;
 let current_book: CurrentBookHelper;
 let content_ids = ['js-toc-content', 'js-reading-content', 'js-book-info-content',
-    'js-library-content-btn', 'js-settings-content'];
+    'js-library-content', 'js-settings-content'];
 
 
 // It has the same sandbox as a Chrome extension.

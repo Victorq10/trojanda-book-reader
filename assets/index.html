@@ -13,52 +13,54 @@
     <base href=".">
   </head>
   <body>
-    <div id="js-application-menu-bar">
-      <button id="js-open-book-btn" title="Open ePub book"><img src="Images/Open_Book.svg"></button>
-      <button id="js-toc-content-btn" title="Зміст"><img src="Images/Toc.svg"></button>
-      <button id="js-reading-content-btn" title="Читати"><img src="Images/Reading.svg"></button>
-      <button id="js-prev-chapter-btn" title="Назад"><img src="Images/Previous_Spine.svg"></button>
-      <button id="js-next-chapter-btn" title="Вперед"><img src="Images/Next_Spine.svg"></button>
-      <button id="js-book-info-content-btn" title="Інформація про книгу"><img src="Images/Book_Info.svg"></button>
-      <button id="js-library-content-btn" title="Бібліотека"><img src="Images/Library.svg"></button>
-      <button id="js-settings-content-btn" title="Налаштування"><img src="Images/Settings.svg"></button>
-      <button id="js-contrast-btn" title="Контраст"><img src="Images/High_Contrast_Mode.svg" id="img-high-contrast"><img src="Images/Low_Contrast_Mode.svg" id="img-low-contrast"></button>
-      <button id="js-invmode-btn" title="День/Нічь"><img src="Images/Light_Mode.svg" id="img-light"><img src="Images/Dark_Mode.svg" id="img-dark"></button>
-    </div>
-    <br>
-
-    <div id="js-toc-content" style="display: none;">
-        <div id="title"></div>
-        <div id="author"></div>
-        <br>
-        <div>Зміст</div>
-        <div id="book-nav-map"></div>
-    </div>
-    <div id="js-reading-content" style="display: none;"></div>
-    <div id="js-book-info-content" style="display: none;"></div>
-    <div id="js-library-content" style="display: none;"></div>
-
-    <div id="js-settings-content" style="display: none;">
-      <hr>
-      <!-- 
-      We are using node <script>document.write(process.versions.node)</script>,
-      Chrome <script>document.write(process.versions.chrome)</script>,
-      and Electron <script>document.write(process.versions.electron)</script>.
-      -->
-      We are using Node.js <span id="node-version"></span>,
-      Chromium <span id="chrome-version"></span>,
-      and Electron <span id="electron-version"></span>.
-      <hr>
-      <div id="holder">
-        Drag your file here
+    <div id="js-application-menu">
+      <div id="menu-bar">
+        <button id="js-open-book-btn" title="Open ePub book"><img src="images/open-book.svg"></button>
+        <button id="js-toc-content-btn" title="Зміст"><img src="images/toc.svg"></button>
+        <button id="js-reading-content-btn" title="Читати"><img src="images/reading.svg"></button>
+        <button id="js-prev-chapter-btn" title="Назад"><img src="images/previous-spine.svg"></button>
+        <button id="js-next-chapter-btn" title="Вперед"><img src="images/next-spine.svg"></button>
+        <button id="js-book-info-content-btn" title="Інформація про книгу"><img src="images/book-info.svg"></button>
+        <button id="js-library-content-btn" title="Бібліотека"><img src="images/library.svg"></button>
+        <button id="js-settings-content-btn" title="Налаштування"><img src="images/settings.svg"></button>
+        <button id="js-contrast-btn" title="Контраст"><img src="images/high-contrast-mode.svg" id="img-high-contrast"><img src="images/low-contrast-mode.svg" id="img-low-contrast"></button>
+        <button id="js-invmode-btn" title="День/Нічь"><img src="images/light-mode.svg" id="img-light"><img src="images/dark-mode.svg" id="img-dark"></button>
       </div>
-      <a href="the_best_website.html" id="rbw">The Best Website</a>
     </div>
-    <br>
+    <section id="js-application-content">
+      <div id="js-toc-content" class="application-content-section" style="display: none;">
+          <div id="title"></div>
+          <div id="author"></div>
+          <br>
+          <div>Зміст</div>
+          <div id="book-nav-map"></div>
+      </div>
+      <div id="js-reading-content" class="application-content-section" style="display: none;"></div>
+      <div id="js-book-info-content" class="application-content-section" style="display: none;"></div>
+      <div id="js-library-content" class="application-content-section" style="display: none;"></div>
 
-    <!-- You can also require other files to run in this process -->
-    <script src="../build/renderer.js"></script>
-    <script src="the_best_website.js" type="text/javascript"></script>
+      <div id="js-settings-content" class="application-content-section" style="display: none;">
+        <hr>
+        <!-- 
+        We are using node <script>document.write(process.versions.node)</script>,
+        Chrome <script>document.write(process.versions.chrome)</script>,
+        and Electron <script>document.write(process.versions.electron)</script>.
+        -->
+        We are using Node.js <span id="node-version"></span>,
+        Chromium <span id="chrome-version"></span>,
+        and Electron <span id="electron-version"></span>.
+        <hr>
+        <div id="holder">
+          Drag your file here
+        </div>
+        <a href="the_best_website.html" id="rbw">The Best Website</a>
+      </div>
+      <br>
+
+      <!-- You can also require other files to run in this process -->
+      <script src="../build/renderer.js"></script>
+      <script src="the_best_website.js" type="text/javascript"></script>
+    </section>
   </body>
 </html>
 
