@@ -4,5 +4,9 @@
 			"path": "."
 		}
 	],
-	"settings": {}
+	"settings": {
+		/* "javascript.validate.enable": false,
+		"typescript.validate.enable": false, */
+		/* "problems.decorations.enabled": false */
+	}
 }

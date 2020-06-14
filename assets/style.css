@@ -37,6 +37,15 @@ a {
 }
 
 
+#js-application-menu button:focus, section:focus#js-application-content {
+    outline   : none;
+    box-shadow: none;
+    border-top: 5px solid #a1a1a1FF;
+}
+section#js-application-content {
+    /* Preventing flickering border on short time between blur and focus events when menu button is pressed. */
+    transition: border-top 0.5s ease-in 0.4s;
+}
 
 
 #js-application-menu {
@@ -57,29 +66,33 @@ a {
 #js-application-menu button:last-child {
     border-bottom-right-radius: 5px;
 }
-#js-application-menu button:focus {
-    outline   : none;
-    box-shadow: none;
-}
 #js-application-menu button:hover {
     background-color: #a1a1a160;
 }
 #js-application-menu button {
     padding         : 1px 3px;
-    border-width    : 0;
+    border-width    : 5px 0 0 0;
+    border-top      : 5px solid transparent;
     background-color: #0000;
     cursor          : pointer;
+    color           : inherit;
+}
+#js-application-menu button#js-reading-percent {
+    font-size: 16px;
+    text-align: left;
+    padding: 0 12px;
 }
 #js-application-menu button>img {
     filter: grayscale(1)
 }
 
-
 #js-application-content {
-    flex      : auto;
-    overflow-y: scroll;
-    margin    : 10px 1px 0 0;
-    padding   : 30px;
+    flex        : auto;
+    overflow-y  : scroll;
+    margin      : 10px 1px 0 0;
+    padding     : 30px;
+    border-width: 5px 0 0 0;
+    border-top  : 5px solid transparent;
 }
 
 #js-application-content .application-content-section {
@@ -115,6 +128,19 @@ html:not(.inverted) #img-dark {
     display: inline;
 }
 html:not(.inverted) #img-light {
+    display: none;
+}
+
+html.romanized #img-romanized {
+    display: none;
+}
+html.romanized #img-not-romanized {
+    display: inline;
+}
+html:not(.romanized) #img-romanized {
+    display: inline;
+}
+html:not(.romanized) #img-not-romanized {
     display: none;
 }
 

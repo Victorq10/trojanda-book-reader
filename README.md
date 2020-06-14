@@ -114,6 +114,17 @@ https://github.com/stfsy/node-html-light    https://www.npmjs.com/package/node-h
 https://github.com/douzi8/htmldom           https://www.npmjs.com/package/htmldom
 https://github.com/facebook/react           https://www.npmjs.com/package/react-dom
 
+CHANGE_LOG GENERATOR
+--------------------
+https://www.npmjs.com/search?q=github_changelog_generator
+
+Create file "scripts/changelog" wish content:
+```
+#!/usr/bin/env bash
+#  gem install github_changelog_generator
+github_changelog_generator -u fgribreau -p node-unidecode
+```
+
 RESOURCES
 ---------
 https://matthewhorne.me/setup-typescript-project/
@@ -121,5 +132,5 @@ https://sqlite.org/cli.html
 https://derickbailey.com/2016/03/09/creating-a-true-singleton-in-node-js-with-es6-symbols/
 https://nodejs.org/api/esm.html#esm_writing_dual_packages_while_avoiding_or_minimizing_hazards
 https://css-tricks.com/examples/WebKitScrollbars/
-
+https://developer.mozilla.org/en-US/docs/Web/Accessibility/Keyboard-navigable_JavaScript_widgets
 

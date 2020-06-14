@@ -1,15 +1,28 @@
 {
   "version": "0.2.0",
   "configurations": [
-  {
-    "name": "Launch test.js",
-    "type": "node",
-    "request": "launch",
-    "cwd": "${workspaceFolder}",
-    "runtimeExecutable": "node",
-    "args": [ "./build/test.js" ],
-    "outputCapture": "std"
-  },
+    {
+      "name": "Run romanization.js",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "runtimeExecutable": "node",
+      "args": [
+        "./build/romanization/romanization.js"
+      ],
+      "outputCapture": "std"
+    },
+    {
+      "name": "Launch test.js",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "runtimeExecutable": "node",
+      "args": [
+        "./build/test.js"
+      ],
+      "outputCapture": "std"
+    },
     {
       "name": "Debug Main Process",
       "type": "node",
@@ -19,9 +32,10 @@
       "windows": {
         "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron.cmd"
       },
-      "args" : ["./build/main.js"],
+      "args": [
+        "./build/main.js"
+      ],
       "outputCapture": "std"
     }
   ]
 }
-

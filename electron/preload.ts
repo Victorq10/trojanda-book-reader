@@ -2,12 +2,14 @@
 
 // import { ipcRenderer } from "electron"
 const { ipcRenderer } = require('electron')
+import * as path from 'path'
+import * as fs from 'fs-extra'
+
 import { TrojandaBook, NavPoint, ManifestItem } from './trojanda-book';
+import { romanize } from './romanization/romanization';
 //import { TrojandaBookApplication } from './trojanda-book-application';
 //const trojandaBookApplication = global.trojandaBookApplicationInstance as TrojandaBookApplication;
 
-import * as path from 'path'
-import * as fs from 'fs-extra'
 
 let current_spine_src: string;
 let current_book: CurrentBookHelper;
@@ -79,8 +81,95 @@ window.addEventListener('DOMContentLoaded', () => {
     addEvent('js-settings-content-btn', (event: MouseEvent) => {
         show_content_by_id('js-settings-content');
     });
-});
+    addEvent('js-romanize-btn', (event: MouseEvent) => {
+        toggle_romanized_text();
+        focus_application_content();
+    });
 
+    init_reading_percent();
+});
+const romanized_text_for_revert = new Map<Node, string>();
+function toggle_romanized_text() {
+    const html = document.querySelector('html');
+    const is_romanize = html.classList.toggle('romanized');
+    if (!is_romanize && !romanized_text_for_revert.size) {
+        return;
+    }
+    romanize_text(is_romanize);
+}
+function check_and_romanize_text() {
+    const html = document.querySelector('html');
+    const should_romanize = html.classList.contains('romanized');
+    if (should_romanize) {
+        romanize_text(true);
+    }
+}
+
+async function romanize_text(is_romanize: boolean) {
+    let t1 = new Date();
+    if (is_romanize) {
+        romanized_text_for_revert.clear();
+    }
+    let count = 0,
+        la_character_count = 0,
+        uk_character_count = 0;
+    const reading_content = document.getElementById('js-reading-content')
+    const all_elmt = reading_content.getElementsByTagName('*')
+    for(let i = 0; i < all_elmt.length; i++) {
+        let elmt = all_elmt[i];
+        for(let j = 0; j < elmt.childNodes.length; j++) {
+            let node = elmt.childNodes[j];
+            if (node.nodeType === node.TEXT_NODE) {
+                let uk_text : string, la_text: string;
+                if (is_romanize) {
+                    uk_text = node.textContent;
+                    la_text = romanize(node.textContent);
+                    node.textContent = la_text;
+                    romanized_text_for_revert.set(node, uk_text);
+                } else { // revert romanization
+                    la_text = node.textContent;
+                    uk_text = romanized_text_for_revert.get(node);
+                    node.textContent = uk_text;
+                    romanized_text_for_revert.delete(node);
+                }
+                la_character_count += la_text.length;
+                uk_character_count += uk_text.length;
+                count++;
+                //console.log(node.textContent);
+            }
+        }
+    }
+    if (!is_romanize && romanized_text_for_revert.size) {
+        console.warn(`CHECK CLEARNING CHACH FOR ROMANIZATION!!! Cache size is ${romanized_text_for_revert.size} entries. FORCE CLEARING!!!`)
+        romanized_text_for_revert.clear();
+    } 
+    let t2 = new Date();
+    console.log(`Romanize text of ${count} phrases 
+        or ${la_character_count} “la” characters 
+        or ${uk_character_count} “uk” characters 
+        was done in ${format_log_time_string(t1)}`);
+}
+function format_log_time_string(start_time: Date): string {
+    const current_time = new Date();
+    return `${(current_time.getTime() - start_time.getTime()) / 1000}s`;
+}
+
+function init_reading_percent() {
+    const elmt = document.getElementById('js-reading-percent');
+    (function update_precent() {
+        if (elmt) {
+            if (is_reading_mode()) {
+                const reading_precent = get_percent_of_position()
+                if (elmt.innerHTML !== reading_precent) {
+                    elmt.innerHTML = reading_precent;
+                }
+            } else {
+                //elmt.textContent = '';
+            }
+        }
+        setTimeout(update_precent, 300);
+    })();
+}
 ipcRenderer.on('display-book', (event: any, trojanda_book: TrojandaBook) => {
     console.log(trojanda_book); // prints "pong"
     current_book = new CurrentBookHelper(trojanda_book);
@@ -97,18 +186,61 @@ document.addEventListener('click', (event) => {
         event.preventDefault()
         event.stopPropagation();
         current_book.load_and_display_link(target);
+    } else if (target.classList.contains('application-content-section') || target.id == 'js-application-content') {
+        if (event.clientY < document.body.clientHeight / 2) {
+            scroll_one_page(true);
+        } else {
+            scroll_one_page(false);
+        }
     }
 });
+function focus_application_content() {
+    document.getElementById('js-application-content').focus();
+}
 
 function show_content_by_id(elmt_id: string): void {
     for (const content_id of content_ids) {
         const elmt = document.getElementById(content_id);
         if (content_id === elmt_id) {
             elmt.style.display = '';
+            focus_application_content();
         } else {
             elmt.style.display = 'none';
         }
     }
+}
+
+function is_reading_mode() {
+    return document.getElementById('js-reading-content').style.display !== 'none';
+}
+
+function scroll_to_start_of_content() {
+    const application_content = document.getElementById('js-application-content');
+    application_content.scroll({ 
+      top: 0,
+      left: 0
+    });
+}
+
+function scroll_one_page(up: boolean = false) {
+    const application_content = document.getElementById('js-application-content');
+    const one_page_scroll_value = application_content.clientHeight
+    let font_size = 28;
+    let line_height = 1.4
+    application_content.scrollBy({ 
+      top: (one_page_scroll_value - (font_size * line_height)) * (up ? -1 : 1),
+      left: 0, 
+      behavior: 'smooth' 
+    });
+}
+
+function get_percent_of_position(): string {
+    const application_content = document.getElementById('js-application-content');
+    let percent = ((application_content.scrollTop + application_content.clientHeight) / application_content.scrollHeight * 100).toFixed(1)
+    let number_of_pages = (application_content.scrollHeight / application_content.clientHeight).toFixed(1)
+    let current_page = ((application_content.scrollTop + application_content.clientHeight)
+        / application_content.clientHeight).toFixed(1)
+    return `page ${current_page} of ${number_of_pages}<br>progress: ${percent}%`;
 }
 
 class CurrentBookHelper {
@@ -179,8 +311,9 @@ class CurrentBookHelper {
     }
 
     async load_and_display_file_content(filepath: string): Promise<any> {
+        const t1 = new Date();
         return await fs.readFile(filepath, 'utf-8').then((data) => {
-            console.log("Reading file “" + filepath + "” (size: " + data.length + ")");
+            console.log(`Reading  ${data.length} byte from “${filepath}” file take ${format_log_time_string(t1)}`);
             let reading_content_elmt = document.getElementById('js-reading-content');
 
             let base_dir = filepath.substring(0, filepath.lastIndexOf('/') + 1)
@@ -195,7 +328,9 @@ class CurrentBookHelper {
             this.remove_elemens(reading_content_elmt, 'style');
             this.remove_elemens(reading_content_elmt, 'meta');
             this.remove_elemens(reading_content_elmt, 'title');
-            show_content_by_id('js-reading-content')
+            check_and_romanize_text();
+            show_content_by_id('js-reading-content');
+            scroll_to_start_of_content();
         });
     }
 
@@ -216,7 +351,7 @@ class CurrentBookHelper {
 
     load_and_display_link(target: HTMLElement): void {
         let href = target.getAttribute('href')
-        console.log('An a element was clicked on “' + target.textContent + '” link, href:' + href)
+        console.log(`An “${target.textContent}”(${href}) link was clicked`)
         let filepath = href.replace('file://', '') // existed link on the page with full path
         this.load_and_display_file_content(filepath)
             .then(() => {
