@@ -77,7 +77,7 @@ section#js-application-content {
     cursor          : pointer;
     color           : inherit;
 }
-#js-application-menu button#js-reading-percent {
+#js-application-menu button#js-progress-info {
     font-size: 16px;
     text-align: left;
     padding: 0 12px;

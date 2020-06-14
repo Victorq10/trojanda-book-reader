@@ -82,96 +82,14 @@ window.addEventListener('DOMContentLoaded', () => {
         show_content_by_id('js-settings-content');
     });
     addEvent('js-romanize-btn', (event: MouseEvent) => {
-        toggle_romanized_text();
+        romanization_helper.toggle_romanized_text();
         focus_application_content();
     });
 
-    init_reading_percent();
+    progress_status_component.init_reading_percent();
 });
-const romanized_text_for_revert = new Map<Node, string>();
-function toggle_romanized_text() {
-    const html = document.querySelector('html');
-    const is_romanize = html.classList.toggle('romanized');
-    if (!is_romanize && !romanized_text_for_revert.size) {
-        return;
-    }
-    romanize_text(is_romanize);
-}
-function check_and_romanize_text() {
-    const html = document.querySelector('html');
-    const should_romanize = html.classList.contains('romanized');
-    if (should_romanize) {
-        romanize_text(true);
-    }
-}
 
-async function romanize_text(is_romanize: boolean) {
-    let t1 = new Date();
-    if (is_romanize) {
-        romanized_text_for_revert.clear();
-    }
-    let count = 0,
-        la_character_count = 0,
-        uk_character_count = 0;
-    const reading_content = document.getElementById('js-reading-content')
-    const all_elmt = reading_content.getElementsByTagName('*')
-    for(let i = 0; i < all_elmt.length; i++) {
-        let elmt = all_elmt[i];
-        for(let j = 0; j < elmt.childNodes.length; j++) {
-            let node = elmt.childNodes[j];
-            if (node.nodeType === node.TEXT_NODE) {
-                let uk_text : string, la_text: string;
-                if (is_romanize) {
-                    uk_text = node.textContent;
-                    la_text = romanize(node.textContent);
-                    node.textContent = la_text;
-                    romanized_text_for_revert.set(node, uk_text);
-                } else { // revert romanization
-                    la_text = node.textContent;
-                    uk_text = romanized_text_for_revert.get(node);
-                    node.textContent = uk_text;
-                    romanized_text_for_revert.delete(node);
-                }
-                la_character_count += la_text.length;
-                uk_character_count += uk_text.length;
-                count++;
-                //console.log(node.textContent);
-            }
-        }
-    }
-    if (!is_romanize && romanized_text_for_revert.size) {
-        console.warn(`CHECK CLEARNING CHACH FOR ROMANIZATION!!! Cache size is ${romanized_text_for_revert.size} entries. FORCE CLEARING!!!`)
-        romanized_text_for_revert.clear();
-    } 
-    let t2 = new Date();
-    console.log(`Romanize text of ${count} phrases 
-        or ${la_character_count} “la” characters 
-        or ${uk_character_count} “uk” characters 
-        was done in ${format_log_time_string(t1)}`);
-}
-function format_log_time_string(start_time: Date): string {
-    const current_time = new Date();
-    return `${(current_time.getTime() - start_time.getTime()) / 1000}s`;
-}
-
-function init_reading_percent() {
-    const elmt = document.getElementById('js-reading-percent');
-    (function update_precent() {
-        if (elmt) {
-            if (is_reading_mode()) {
-                const reading_precent = get_percent_of_position()
-                if (elmt.innerHTML !== reading_precent) {
-                    elmt.innerHTML = reading_precent;
-                }
-            } else {
-                //elmt.textContent = '';
-            }
-        }
-        setTimeout(update_precent, 300);
-    })();
-}
 ipcRenderer.on('display-book', (event: any, trojanda_book: TrojandaBook) => {
-    console.log(trojanda_book); // prints "pong"
     current_book = new CurrentBookHelper(trojanda_book);
     current_book.init_and_display_toc_content();
 })
@@ -194,6 +112,7 @@ document.addEventListener('click', (event) => {
         }
     }
 });
+
 function focus_application_content() {
     document.getElementById('js-application-content').focus();
 }
@@ -234,34 +153,13 @@ function scroll_one_page(up: boolean = false) {
     });
 }
 
-function get_percent_of_position(): string {
-    const application_content = document.getElementById('js-application-content');
-    let percent = ((application_content.scrollTop + application_content.clientHeight) / application_content.scrollHeight * 100).toFixed(1)
-    let number_of_pages = (application_content.scrollHeight / application_content.clientHeight).toFixed(1)
-    let current_page = ((application_content.scrollTop + application_content.clientHeight)
-        / application_content.clientHeight).toFixed(1)
-    return `page ${current_page} of ${number_of_pages}<br>progress: ${percent}%`;
-}
-
 class CurrentBookHelper {
     trojanda_book: TrojandaBook;
-    spine_manifest_items: Array<ManifestItem> = [];
+    spine_manifest_items = new Array<ManifestItem>();
 
     constructor(trojanda_book: TrojandaBook) {
         this.trojanda_book = trojanda_book
-        for (const manifest_item_id of trojanda_book.spine) {
-            let found = false;
-            for (const manifest_item of trojanda_book.manifest_items) {
-                if (manifest_item.id === manifest_item_id) {
-                    found = true;
-                    this.spine_manifest_items.push(manifest_item);
-                    break;
-                }
-            }
-            if (!found) {
-                console.warn('Can not find manifest item by id :' + manifest_item_id)
-            }
-        }
+        this.spine_manifest_items = trojanda_book.spine_manifest_items;
         console.log(this);
     }
 
@@ -303,17 +201,10 @@ class CurrentBookHelper {
         return ul_elmt;
     }
 
-    remove_elemens(elmt: HTMLElement, tagName: string) {
-        let elements = elmt.getElementsByTagName(tagName);
-        for (let i = 0; i < elements.length; i++) {
-            elements[i].remove();
-        }
-    }
-
     async load_and_display_file_content(filepath: string): Promise<any> {
         const t1 = new Date();
         return await fs.readFile(filepath, 'utf-8').then((data) => {
-            console.log(`Reading  ${data.length} byte from “${filepath}” file take ${format_log_time_string(t1)}`);
+            console.log(`Reading  ${data.length} byte from “${filepath}” file take ${utils.format_log_time_string(t1)}`);
             let reading_content_elmt = document.getElementById('js-reading-content');
 
             let base_dir = filepath.substring(0, filepath.lastIndexOf('/') + 1)
@@ -324,11 +215,11 @@ class CurrentBookHelper {
 
             reading_content_elmt.innerHTML = data
             // remove all style elements from the chapter
-            this.remove_elemens(reading_content_elmt, 'link');
-            this.remove_elemens(reading_content_elmt, 'style');
-            this.remove_elemens(reading_content_elmt, 'meta');
-            this.remove_elemens(reading_content_elmt, 'title');
-            check_and_romanize_text();
+            utils.remove_elemens(reading_content_elmt, 'link');
+            utils.remove_elemens(reading_content_elmt, 'style');
+            utils.remove_elemens(reading_content_elmt, 'meta');
+            utils.remove_elemens(reading_content_elmt, 'title');
+            romanization_helper.check_and_romanize_text();
             show_content_by_id('js-reading-content');
             scroll_to_start_of_content();
         });
@@ -351,7 +242,7 @@ class CurrentBookHelper {
 
     load_and_display_link(target: HTMLElement): void {
         let href = target.getAttribute('href')
-        console.log(`An “${target.textContent}”(${href}) link was clicked`)
+        //console.log(`A “${target.textContent}”(${href}) link was clicked`)
         let filepath = href.replace('file://', '') // existed link on the page with full path
         this.load_and_display_file_content(filepath)
             .then(() => {
@@ -364,11 +255,11 @@ class CurrentBookHelper {
             });
     }
 
-    get_spine_manifest_item_by_href(manifest_item_href: string): number {
+    get_current_spine_idx(): number {
         let current_idx = -1;
         let i = 0;
         for (const spine_manifest_items of this.spine_manifest_items) {
-            if (spine_manifest_items.href === manifest_item_href) {
+            if (spine_manifest_items.href === current_spine_src) {
                 current_idx = i;
                 break;
             }
@@ -380,8 +271,12 @@ class CurrentBookHelper {
         return current_idx;
     }
 
+    get_number_of_spines() {
+        return this.spine_manifest_items.length;
+    }
+
     display_prev_spine() {
-        const current_spine_idx = this.get_spine_manifest_item_by_href(current_spine_src);
+        const current_spine_idx = this.get_current_spine_idx();
         if (current_spine_idx > 0 && this.spine_manifest_items.length > 0) {
             let next_spine_manifest_item = this.spine_manifest_items[current_spine_idx - 1];
             this.load_and_display_manifestItem(next_spine_manifest_item);
@@ -389,13 +284,143 @@ class CurrentBookHelper {
     }
 
     display_next_spine() {
-        const current_spine_idx = this.get_spine_manifest_item_by_href(current_spine_src);
+        const current_spine_idx = this.get_current_spine_idx();
         if ((current_spine_idx + 1) < this.spine_manifest_items.length) {
             let next_spine_manifest_item = this.spine_manifest_items[current_spine_idx + 1];
             this.load_and_display_manifestItem(next_spine_manifest_item);
         }
     }
-
-
+}
+class RomanizationHelper {
+    romanized_text_for_revert = new Map<Node, string>();
+    toggle_romanized_text() {
+        const html = document.querySelector('html');
+        const is_romanize = html.classList.toggle('romanized');
+        if (!is_romanize && !this.romanized_text_for_revert.size) {
+            return;
+        }
+        this.romanize_text(is_romanize);
+    }
+    check_and_romanize_text() {
+        const html = document.querySelector('html');
+        const should_romanize = html.classList.contains('romanized');
+        if (should_romanize) {
+            this.romanize_text(true);
+        }
+    }
+        async romanize_text(is_romanize: boolean) {
+        let t1 = new Date();
+        if (is_romanize) {
+            this.romanized_text_for_revert.clear();
+        }
+        let count = 0,
+            la_character_count = 0,
+            uk_character_count = 0;
+        const reading_content = document.getElementById('js-reading-content')
+        const all_elmt = reading_content.getElementsByTagName('*')
+        for(let i = 0; i < all_elmt.length; i++) {
+            let elmt = all_elmt[i];
+            for(let j = 0; j < elmt.childNodes.length; j++) {
+                let node = elmt.childNodes[j];
+                if (node.nodeType === node.TEXT_NODE) {
+                    let uk_text : string, la_text: string;
+                    if (is_romanize) {
+                        uk_text = node.textContent;
+                        la_text = romanize(node.textContent);
+                        node.textContent = la_text;
+                        this.romanized_text_for_revert.set(node, uk_text);
+                    } else { // revert romanization
+                        la_text = node.textContent;
+                        uk_text = this.romanized_text_for_revert.get(node);
+                        node.textContent = uk_text;
+                        this.romanized_text_for_revert.delete(node);
+                    }
+                    la_character_count += la_text.length;
+                    uk_character_count += uk_text.length;
+                    count++;
+                    //console.log(node.textContent);
+                }
+            }
+        }
+        if (!is_romanize && this.romanized_text_for_revert.size) {
+            console.warn(`CHECK CLEARNING CHACH FOR ROMANIZATION!!! Cache size is ${this.romanized_text_for_revert.size} entries. FORCE CLEARING!!!`)
+            this.romanized_text_for_revert.clear();
+        } 
+        let t2 = new Date();
+        console.log(`Romanize text of ${count} phrases 
+            or ${la_character_count} “la” characters 
+            or ${uk_character_count} “uk” characters 
+            was done in ${utils.format_log_time_string(t1)}`);
+    }
+    
 }
 
+class ProgressInfo {
+    chapter_info: string;
+    pages_info: string;
+    percent_info: string;
+}
+
+class ProgressStatusComponent {
+    init_reading_percent() {
+        const chapter_info = document.getElementById('chapters-info');
+        const pages_info = document.getElementById('pages-info');
+        const percent_info = document.getElementById('percent-info');
+        const elmt = document.getElementById('js-progress-info');
+        (function update_precent() {
+            if (elmt) {
+                if (is_reading_mode()) {
+                    const progress_info = progress_status_component.get_progress_info()
+                    utils.update_text_content(chapter_info, progress_info.chapter_info);
+                    utils.update_text_content(pages_info, progress_info.pages_info);
+                    utils.update_text_content(percent_info, progress_info.percent_info);
+                } else {
+                    //elmt.textContent = '';
+                }
+            }
+            setTimeout(update_precent, 300);
+        })();
+    }
+    get_progress_info(): ProgressInfo {
+        const application_content = document.getElementById('js-application-content');
+        const percent = ((application_content.scrollTop + application_content.clientHeight) / application_content.scrollHeight * 100).toFixed(1);
+        const number_of_pages = (application_content.scrollHeight / application_content.clientHeight).toFixed(1);
+        const current_page = ((application_content.scrollTop + application_content.clientHeight)
+            / application_content.clientHeight).toFixed(1);
+        const current_spine_idx = current_book.get_current_spine_idx();
+        const number_of_spines = current_book.get_number_of_spines();
+        return {
+            chapter_info: `chapter ${current_spine_idx + 1} of ${number_of_spines}`,
+            pages_info: `page ${current_page} of ${number_of_pages}`,
+            percent_info: `progress ${percent}%`
+        };
+       /*  this.chapter_info.textContent = `Chapter ${current_spine_idx + 1} / ${number_of_spines}`;
+        this.pages_info.textContent = `page ${current_page} / ${number_of_pages}`;
+        this.percent_info.textContent = `${percent}%`
+        return `Chapter ${current_spine_idx + 1} / ${number_of_spines}<br>
+                page ${current_page} / ${number_of_pages} —
+                ${percent}%`; */
+    }
+}
+class Utils {
+    remove_elemens(elmt: HTMLElement, tagName: string) {
+        let elements = elmt.getElementsByTagName(tagName);
+        for (let i = 0; i < elements.length; i++) {
+            elements[i].remove();
+        }
+    }
+
+    format_log_time_string(start_time: Date): string {
+        const current_time = new Date();
+        return `${(current_time.getTime() - start_time.getTime()) / 1000}s`;
+    }
+    update_text_content(elmt:  HTMLElement, text_content: string): void {
+        if (elmt.textContent !== text_content) {
+            elmt.textContent = text_content;
+        }
+    }    
+}
+
+const romanization_helper = new RomanizationHelper()
+const utils = new Utils();
+const progress_status_component = new ProgressStatusComponent();

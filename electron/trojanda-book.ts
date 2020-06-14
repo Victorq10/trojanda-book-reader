@@ -80,6 +80,7 @@ export class TrojandaBook {
 
     manifest_items: ManifestItem[] = []; // here is metadata and all resources
     spine: string[] = []; // resources for linear reading, contain id from manifestItems
+    spine_manifest_items = new Array<ManifestItem>();
 
     book_toc?: BookTOC; // type class BookTOC Object
     book_title?: string; // dublicate with bookTOC.title
@@ -114,6 +115,7 @@ export class TrojandaBook {
         this.parse_toc_file();
 
         this.init_book_toc();
+        this.init_manifenst_items();
         this.init_spine();
     }
 
@@ -174,60 +176,81 @@ export class TrojandaBook {
         return text;
     }
 
-    init_spine() {
+    init_manifenst_items() {
         if (this.root_opf_xmldoc === undefined) {
             return;
         }
         let manifest = this.root_opf_xmldoc.getElementsByTagName('manifest')[0]
         if (!manifest) {
             console.error("There is no manifest element in the book opf file")
-        } else {
-            let manifest_items = [];
-            let items = manifest.getElementsByTagName('item')
-            for (let i = 0; i < items.length; i++) {
-                let node = items[i]
-                if (node.tagName === 'item') {
-                    let manifest_item = new ManifestItem();
-                    manifest_item.id = node.getAttribute('id');
-                    manifest_item.href = node.getAttribute('href');
-                    manifest_item.media_type = node.getAttribute('media-type');
-                    let valid = true;
-                    if (manifest_item.id === null || manifest_item.id === "") {
-                        console.warn("There is no id attribute for item element");
-                        valid = false;
-                    }
-                    if (manifest_item.href === null || manifest_item.href === "") {
-                        console.warn("There is no href attribute for item element");
-                        valid = false;
-                    }
-                    if (valid && manifest_item.href !== null) {
-                        manifest_item.full_filepath = path.resolve(this.content_basedir, manifest_item.href);
-                        manifest_items.push(manifest_item);
-                    }
+            return;
+        }
+        let manifest_items = [];
+        let items = manifest.getElementsByTagName('item')
+        for (let i = 0; i < items.length; i++) {
+            let node = items[i]
+            if (node.tagName === 'item') {
+                let manifest_item = new ManifestItem();
+                manifest_item.id = node.getAttribute('id');
+                manifest_item.href = node.getAttribute('href');
+                manifest_item.media_type = node.getAttribute('media-type');
+                let valid = true;
+                if (manifest_item.id === null || manifest_item.id === "") {
+                    console.warn("There is no id attribute for item element");
+                    valid = false;
+                }
+                if (manifest_item.href === null || manifest_item.href === "") {
+                    console.warn("There is no href attribute for item element");
+                    valid = false;
+                }
+                if (valid && manifest_item.href !== null) {
+                    manifest_item.full_filepath = path.resolve(this.content_basedir, manifest_item.href);
+                    manifest_items.push(manifest_item);
                 }
             }
-            this.manifest_items = manifest_items;
         }
+        this.manifest_items = manifest_items;
+    }
 
+    init_spine() {
+        if (this.root_opf_xmldoc === undefined) {
+            return;
+        }
         let spine_element = this.root_opf_xmldoc.getElementsByTagName('spine')[0]
         if (!spine_element) {
             console.error("There is no spine element in the book opf file")
-        } else {
-            let spine = [];
-            let items = spine_element.getElementsByTagName('itemref')
-            for (let i = 0; i < items.length; i++) {
-                let node = items[i]
-                if (node.tagName === 'itemref') {
-                    let idref = node.getAttribute('idref');
-                    if (idref === null || idref === "") {
-                        console.warn("There is no idref attribute for itemref element");
-                    } else {
-                        spine.push(idref);
-                    }
+            return;
+        }
+        let spine = [];
+        let items = spine_element.getElementsByTagName('itemref')
+        for (let i = 0; i < items.length; i++) {
+            let node = items[i]
+            if (node.tagName === 'itemref') {
+                let idref = node.getAttribute('idref');
+                if (idref === null || idref === "") {
+                    console.warn("There is no idref attribute for itemref element");
+                } else {
+                    spine.push(idref);
                 }
             }
-            this.spine = spine;
         }
+        this.spine = spine;
+
+        // find spine manifensts
+        for (const manifest_item_id of this.spine) {
+            let found = false;
+            for (const manifest_item of this.manifest_items) {
+                if (manifest_item.id === manifest_item_id) {
+                    found = true;
+                    this.spine_manifest_items.push(manifest_item);
+                    break;
+                }
+            }
+            if (!found) {
+                console.warn('Can not find manifest item by id :' + manifest_item_id)
+            }
+        }
+
     }
 
     parse_container_file() : void {
