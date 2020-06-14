@@ -92,18 +92,22 @@ export class TrojandaBook {
     toc_filepath?: string; // here is TOC for display
     toc_xmldoc?: Document;
 
-    constructor(filepath: string, onCompleteCallback: TrojandaBookCallback) {
+    constructor(filepath: string | null, onCompleteCallback: TrojandaBookCallback) {
         this.filepath = filepath;
-        if (true) {
+        if (filepath !== null) {
             this.clear_current_book_dir();
             this.extract_current_book(/* this.i.bind(this) */ () => {
                 this.init_book();
                 onCompleteCallback(this);
             });
-        } else { // read a previously opened book
+        } else {
             this.init_book();
             onCompleteCallback(this);
         }
+    }
+
+    static open_current_book(onCompleteCallback: TrojandaBookCallback) {
+        return new TrojandaBook(null, onCompleteCallback);
     }
 
     init_book() {
@@ -315,6 +319,9 @@ export class TrojandaBook {
     }
 
     determine_root_opf_filepath() : string | undefined {
+        if (this.container_xml_doc === undefined) {
+            return;
+        }
         //let select = xpath.useNamespaces({"xmlns": "urn:oasis:names:tc:opendocument:xmlns:container"})
         //select("//xmlns:container/xmlns:rootfiles/xmlns:rootfile", this.containerXmlDoc)
         //xpath.select("//*[local-name(.)='rootfile' and namespace-uri(.)!='fakeuri']", this.containerXmlDoc)

@@ -12,6 +12,7 @@ declare namespace NodeJS {
         init_app(): void;
         recreate_window(): void;
         open_epub_book(): void;
+        open_previous_book(): void;
     }
 }
 

@@ -20,7 +20,7 @@ export class TrojandaBookApplication {
     }
 
     recreate_window() {
-        this.create_window();
+        this.init_app()
     }
 
     private create_application_menu() {
@@ -78,7 +78,7 @@ export class TrojandaBookApplication {
             //this.win.maximize();
         })
         // Open the DevTools.
-        //win.webContents.openDevTools()
+        //this.win.webContents.openDevTools()
 
         this.win.once('ready-to-show', () => {
             const position = this.get_window_position();
@@ -127,20 +127,25 @@ export class TrojandaBookApplication {
             console.log("No file selected");
             return;
         }
-
         for (const filepath of event.filePaths) {
             // Change how to handle the file content
-            console.log("Opening “" + filepath + "” book ...");
-            this.current_book = new TrojandaBook(filepath, (book) => {
-                //this.win.loadFile(APPLICATION_INDEX_FILE).then(() => {
-                    this.win.webContents.send('display-book', book);
-                //});
-
-            });
+            this.read_book(filepath);
             break;
         }
     }
 
+    private read_book(filepath: string) {
+        console.log("Opening “" + filepath + "” book ...");
+        this.current_book = new TrojandaBook(filepath, (book) => {
+            this.win.webContents.send('display-book', book);
+        });
+    }
+
+    open_previous_book() {
+        this.current_book = TrojandaBook.open_current_book((book) => {
+            this.win.webContents.send('display-book', book);
+        })
+    }
 
     private get_window_position() {
         const window_bounds = this.win.getBounds()

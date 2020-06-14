@@ -33,3 +33,8 @@ ipcMain.on('open-book', () => {
     trojanda_book_application.open_epub_book();
     //event.reply('asynchronous-reply', 'pong')
 })
+
+ipcMain.on('open-previous-book', () => {
+    trojanda_book_application.open_previous_book();
+    //event.reply('asynchronous-reply', 'pong')
+})

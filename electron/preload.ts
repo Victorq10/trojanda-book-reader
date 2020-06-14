@@ -53,6 +53,7 @@ window.addEventListener('DOMContentLoaded', () => {
             btn.addEventListener('click', (event: MouseEvent) => handler(event))
         }
     }
+    ipcRenderer.send('open-previous-book', 'ping')
     addEvent('js-open-book-btn', (event: MouseEvent) => {
         ipcRenderer.send('open-book', 'ping')
     });
@@ -90,8 +91,12 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 ipcRenderer.on('display-book', (event: any, trojanda_book: TrojandaBook) => {
-    current_book = new CurrentBookHelper(trojanda_book);
-    current_book.init_and_display_toc_content();
+    if (trojanda_book.toc_xmldoc === undefined) {
+        console.log('There is data in the book');
+    } else {
+        current_book = new CurrentBookHelper(trojanda_book);
+        current_book.init_and_display_toc_content();
+    }
 })
 
 ipcRenderer.on('asynchronous-reply', (event: any, arg: any) => {
@@ -390,8 +395,8 @@ class ProgressStatusComponent {
         const number_of_pages = (application_content.scrollHeight / application_content.clientHeight).toFixed(1);
         const current_page = ((application_content.scrollTop + application_content.clientHeight)
             / application_content.clientHeight).toFixed(1);
-        const current_spine_idx = current_book.get_current_spine_idx();
-        const number_of_spines = current_book.get_number_of_spines();
+        const current_spine_idx = !current_book ? -1 : current_book.get_current_spine_idx();
+        const number_of_spines = !current_book ? 0 : current_book.get_number_of_spines();
         return {
             chapter_info: `chapter ${current_spine_idx + 1} of ${number_of_spines}`,
             pages_info: `page ${current_page} of ${number_of_pages}`,
