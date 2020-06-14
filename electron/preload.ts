@@ -213,12 +213,15 @@ class CurrentBookHelper {
             //base.setAttribute('href', '../data/currentBook/OEBPS/Text/')
             //base.setAttribute('href', '../data/currentBook/')
 
+            data = data.replace(/<(link|meta)[^>]+>/g, '');
             reading_content_elmt.innerHTML = data
             // remove all style elements from the chapter
-            utils.remove_elemens(reading_content_elmt, 'link');
+            //utils.remove_elemens(reading_content_elmt, 'link');
+            //utils.remove_elemens(reading_content_elmt, 'meta');
             utils.remove_elemens(reading_content_elmt, 'style');
-            utils.remove_elemens(reading_content_elmt, 'meta');
             utils.remove_elemens(reading_content_elmt, 'title');
+            utils.remove_elemens(reading_content_elmt, 'base');
+            utils.remove_class_and_style_attributies(reading_content_elmt);
             romanization_helper.check_and_romanize_text();
             show_content_by_id('js-reading-content');
             scroll_to_start_of_content();
@@ -228,7 +231,7 @@ class CurrentBookHelper {
     load_and_display_manifestItem(manifest_item: ManifestItem) {
         let href = manifest_item.full_filepath;
         console.log('Opening a ManifestItem “' + manifest_item.id + '”')
-        let filepath = href.replace('file://', '') // existed link on the page with full path
+        let filepath = window.decodeURI(href.replace('file://', '')) // existed link on the page with full path
         this.load_and_display_file_content(filepath)
             .then(() => {
                 if (manifest_item.href) {
@@ -243,7 +246,7 @@ class CurrentBookHelper {
     load_and_display_link(target: HTMLElement): void {
         let href = target.getAttribute('href')
         //console.log(`A “${target.textContent}”(${href}) link was clicked`)
-        let filepath = href.replace('file://', '') // existed link on the page with full path
+        let filepath = window.decodeURI(href.replace('file://', '')) // existed link on the page with full path
         this.load_and_display_file_content(filepath)
             .then(() => {
                 if (target.dataset.spineSrc) {
@@ -419,6 +422,16 @@ class Utils {
             elmt.textContent = text_content;
         }
     }    
+    remove_class_and_style_attributies(elmt: HTMLElement) {
+        const all_elmts_with_style_attr = elmt.querySelectorAll('*[style]')
+        for(let i = 0; i < all_elmts_with_style_attr.length; i++) {
+            all_elmts_with_style_attr[i].removeAttribute('style');
+        }
+        const all_elmts_with_class_attr = elmt.querySelectorAll('*[class]')
+        for(let i = 0; i < all_elmts_with_class_attr.length; i++) {
+            all_elmts_with_class_attr[i].removeAttribute('class');
+        }
+    }
 }
 
 const romanization_helper = new RomanizationHelper()
