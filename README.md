@@ -76,15 +76,48 @@ An `SQLITE EXPLORER` will be appear in the left side of you `Visual Studio Code`
   plugin to view SQLite database (it require `sqlite3` command line tool).
 
 NAME CONVENTIONS
-================
+----------------
 snale cace (or Underscope) is used for variable, instances, parameters and function names. 
 
 CamelCaces is used for Types, Classes, Enums etc.
 
-See: [Snake case](https://en.wikipedia.org/wiki/Snake_case) on Wikipedia. and [Python: Naming Conventions](https://www.python.org/dev/peps/pep-0008/#naming-conventions)
+See: [Snake case](https://en.wikipedia.org/wiki/Snake_case) on Wikipedia. and [Python: Naming Conventions](https://www.python.org/dev/peps/pep-0008/#naming-conventions) (5 007 026 views • published 30 трав. 2017 р.)
 
 At least one study found that readers can recognise snake case values more quickly than camelCase:
 [Sharif, Bonita; Maletic, Jonathan I. (2010). "An Eye Tracking Study on camelCase and under_score Identifier Styles"](http://www.cs.kent.edu/~jmaletic/papers/ICPC2010-CamelCaseUnderScoreClouds.pdf)
+
+History of usage of identifiers in the CSS and DOM elements https://developer.mozilla.org/en-US/docs/Archive/Beginner_tutorials/Underscores_in_class_and_ID_Names. Why it is **dash** and not **underscope** symbol.
+
+Some links to other standarts of Code conventions 
+- https://standardjs.com/ 
+- https://www.jetbrains.com/help/webstorm/settings-code-style-javascript.html
+- https://github.com/airbnb/javascript
+- https://google.github.io/styleguide/jsguide.html
+
+
+OTHER APPLICATIONS FOR DEVELOPMENT ENVIRONMENT
+==============================================
+
+DATABASE APPLICATIONS
+----------------------
+Mainly I use this **SQuirreL SQL** and **DB Browser for SQLite** for `sqlite.db` files.
+
+- http://squirrel-sql.sourceforge.net/                        — Universal SQL Client 
+- https://sqlitebrowser.org/                                  — DB Browser for SQLite
+- https://dbeaver.io/                                         — Free Universal Database Tool
+- https://www.beekeeperstudio.io/ — **I just here about it**  — Open Source SQL Editor and Database Manager (on electron with usage vue framefork. A repository is https://github.com/beekeeper-studio/beekeeper-studio)
+
+
+SVG IMAGES
+-----------
+I used `Inkscape` Vector Graphics Editor for creating icons in the `Trojanda Book Application`.
+
+Anothe editor is https://boxy-svg.com/. It has even browser version of editor (Live demo). Which you can open from his home page https://boxy-svg.com/app/-LYzdDlq8VjMN2Bl9HUD
+
+With https://www.pencil2d.org/ editor you can create even animation with sound tracks. 
+
+There are some intresting video about animation “12 Principles of Animation (Official Full Series)” https://www.youtube.com/watch?v=uDqjIdI4bF4
+
 
 RESEARCH INFORMATION
 ====================
@@ -129,6 +162,31 @@ Create file "scripts/changelog" wish content:
 #  gem install github_changelog_generator
 github_changelog_generator -u fgribreau -p node-unidecode
 ```
+ICONS SET
+-----------
+A project which combine many packages https://github.com/oblador/react-native-vector-icons — example page is here https://oblador.github.io/react-native-vector-icons/ you can see used icon packages in the package.json. There are some of 
+them:
+- https://github.com/kenangundogan/fontisto
+- https://github.com/evil-icons/evil-icons
+- https://github.com/ionic-team/ionicons
+
+And another:
+- https://github.com/DiemenDesign/LibreICONS
+
+Using icon package sets and use them to create Android or iOS application is placed in the https://github.com/WrathChaos/react-native-dynamic-vector-icons repository
+
+NOT RELATED REVIEW OF CLojure LANGUAGE
+--------------------------------------
+A project https://github.com/razum2um/awesome-clojure collects a collection of projects are written on Clojure language.
+It amazing.
+
+A spec Guide of Clojure language https://clojure.org/guides/spec
+
+DOCUMANTATION RESOURCES
+-----------------------
+- https://www.typescriptlang.org/docs/home.html
+- https://developer.mozilla.org/uk/
+
 
 RESOURCES
 ---------
@@ -138,4 +196,4 @@ RESOURCES
 - https://nodejs.org/api/esm.html#esm_writing_dual_packages_while_avoiding_or_minimizing_hazards
 - https://css-tricks.com/examples/WebKitScrollbars/
 - https://developer.mozilla.org/en-US/docs/Web/Accessibility/Keyboard-navigable_JavaScript_widgets
-
+- https://en.wikipedia.org/wiki/Cyrillic_script_in_Unicode
