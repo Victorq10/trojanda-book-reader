@@ -38,33 +38,33 @@ Open Debuger drop-down menu and select `Debug Main Process (trojanda-book-reader
 USED VERSIONS
 -------------
 ```
-~$ node --version
+$ node --version
 v10.20.1
 
-~$ sqlite3 --version
+$ sqlite3 --version
 3.31.1 2020-01-27 19:55:54 3bfa9cc97da10598521b342961df8f5f68c7388fa117345eeb516eaa837balt1
 
-~$ code --version
+$ code --version
 1.46.0
 a5d1cc28bb5da32ec67e86cc50f84c67cc690321
 x64
 ```
 
-Possible version incompobility
-------------------------------
+Possible version incompatability
+--------------------------------
 if you have trable with `better-sqlite3` version compatability with `electron`.
 You need to run a command
 > $(npm bin)/electron-rebuild
 
 ##### Some details from the https://www.npmjs.com/package/better-sqlite3
-npm install better-sqlite3                     # https://github.com/JoshuaWise/better-sqlite3/blob/HEAD/docs/troubleshooting.md
-npm install --save-dev electron-rebuild        # https://www.npmjs.com/package/electron-rebuild
-$(npm bin)/electron-rebuild
+> npm install better-sqlite3                — https://github.com/JoshuaWise/better-sqlite3/blob/HEAD/docs/troubleshooting.md \
+> npm install --save-dev electron-rebuild   — https://www.npmjs.com/package/electron-rebuild \
+> $(npm bin)/electron-rebuild
 
 VESUAL STUDIO CODE CONFIGURATION
 --------------------------------
 ##### Command line tools:
-* sqlite3 — install with synaptic package manager in the Ubuntu 20.04.
+> sqlite3 — install with synaptic package manager in the Ubuntu 20.04.
 
 Press `ctrl+shift+P` in the `Visual Studio Code` and start to type `sqlite` than select `SQLite: Open Database`. 
 Select `testBook.db` or `Books.db` from the drop-down. Repeate for anothor database.
@@ -97,27 +97,27 @@ adm-zip
 jsZip
 UnZip
 
-hejoshwolfe/yauzl           — https://github.com/thejoshwolfe/yauzl
-antelle/node-stream-zip     — https://github.com/antelle/node-stream-zip 
-ZJONSSON/node-unzipper      — https://github.com/ZJONSSON/node-unzipper
-EvanOxfeld/node-unzip       — https://github.com/EvanOxfeld/node-unzip
-Stuk/jszip                  — https://github.com/Stuk/jszip
-kriskowal/zip               — https://github.com/kriskowal/zip
+> hejoshwolfe/yauzl           — https://github.com/thejoshwolfe/yauzl \
+> antelle/node-stream-zip     — https://github.com/antelle/node-stream-zip \
+> ZJONSSON/node-unzipper      — https://github.com/ZJONSSON/node-unzipper \
+> EvanOxfeld/node-unzip       — https://github.com/EvanOxfeld/node-unzip \
+> Stuk/jszip                  — https://github.com/Stuk/jszip \
+> kriskowal/zip               — https://github.com/kriskowal/zip
 
-see [https://blog.csdn.net/meimeilive/article/details/103150412]
-and [https://github.com/open-xml-templating/pizzip/blob/master/documentation/howto/read_zip.md]
-import PizZip from 'pizzip'
-import JSZipUtils from 'jszip-utils'
+see [https://blog.csdn.net/meimeilive/article/details/103150412] and
+[https://github.com/open-xml-templating/pizzip/blob/master/documentation/howto/read_zip.md]
+- import PizZip from 'pizzip'
+- import JSZipUtils from 'jszip-utils'
 
 DOM PACKAGES
 ------------
-https://github.com/cheeriojs/cheerio
-https://github.com/fb55/DomHandler          https://www.npmjs.com/package/domhandler
-https://github.com/fb55/domutils
-https://github.com/fb55/htmlparser2         https://www.npmjs.com/package/htmlparser2
-https://github.com/stfsy/node-html-light    https://www.npmjs.com/package/node-html-light
-https://github.com/douzi8/htmldom           https://www.npmjs.com/package/htmldom
-https://github.com/facebook/react           https://www.npmjs.com/package/react-dom
+- https://github.com/cheeriojs/cheerio
+- https://github.com/fb55/DomHandler          — https://www.npmjs.com/package/domhandler
+- https://github.com/fb55/domutils
+- https://github.com/fb55/htmlparser2         — https://www.npmjs.com/package/htmlparser2
+- https://github.com/stfsy/node-html-light    — https://www.npmjs.com/package/node-html-light
+- https://github.com/douzi8/htmldom           — https://www.npmjs.com/package/htmldom
+- https://github.com/facebook/react           — https://www.npmjs.com/package/react-dom
 
 CHANGE_LOG GENERATOR
 --------------------
@@ -132,10 +132,10 @@ github_changelog_generator -u fgribreau -p node-unidecode
 
 RESOURCES
 ---------
-https://matthewhorne.me/setup-typescript-project/
-https://sqlite.org/cli.html
-https://derickbailey.com/2016/03/09/creating-a-true-singleton-in-node-js-with-es6-symbols/
-https://nodejs.org/api/esm.html#esm_writing_dual_packages_while_avoiding_or_minimizing_hazards
-https://css-tricks.com/examples/WebKitScrollbars/
-https://developer.mozilla.org/en-US/docs/Web/Accessibility/Keyboard-navigable_JavaScript_widgets
+- https://matthewhorne.me/setup-typescript-project/
+- https://sqlite.org/cli.html
+- https://derickbailey.com/2016/03/09/creating-a-true-singleton-in-node-js-with-es6-symbols/
+- https://nodejs.org/api/esm.html#esm_writing_dual_packages_while_avoiding_or_minimizing_hazards
+- https://css-tricks.com/examples/WebKitScrollbars/
+- https://developer.mozilla.org/en-US/docs/Web/Accessibility/Keyboard-navigable_JavaScript_widgets
 
