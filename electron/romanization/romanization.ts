@@ -14,7 +14,11 @@ const uk_2_la = ((): Map<string, string> => {
     return uk_2_la;
 })();
 function is_capital_letter(letter: string): boolean {
-    return letter && letter.toUpperCase() === letter;
+    if (letter) {
+        const upper_case_letter = letter.toUpperCase();
+        return upper_case_letter !== letter.toLowerCase() && upper_case_letter === letter;
+    }
+    return false
 }
 export function romanize(text: string): string {
     let romanized_text = [];
@@ -34,3 +38,4 @@ export function romanize(text: string): string {
 }
 //console.log(romanize('Привіт Світ!'))
 //console.log(romanize('Ягуар ЯГУАР найкращій. ЩАСТЯ'))
+//console.log(romanize('– Якщо не ви, то хто?'))
