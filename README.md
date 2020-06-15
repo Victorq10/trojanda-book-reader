@@ -3,9 +3,14 @@ trojanda-book-reader
 
 Trojanda Book Reader — a ePub reader application. It's written on Electron with usages TypeScript.
 
-![Trojanda Book Reader](screenshots/Trojanda-book-reader_dark-mode_at_2020-06-13_22-32-39.png)
+Dark mode:
+![Trojanda Book Reader — Dark mode](screenshots/Trojanda-book-reader_dark-mode_at_2020-06-15_11-53-24.png)
 
-![Trojanda Book Reader](screenshots/Trojanda-book-reader_light-mode_2020-06-13_22-31-22.png)
+Light mode:
+![Trojanda Book Reader — Light mode](screenshots/Trojanda-book-reader_light-mode_at_2020-06-15_11-54-16.png)
+
+Dark romanized mode:
+![Trojanda Book Reader — Dark romanized mode](screenshots/Trojanda-book-reader_dark-romanized-mode_at_2020-06-15_11-55-11.png)
 
 INSTALLATION
 ------------
