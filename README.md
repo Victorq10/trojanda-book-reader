@@ -1,7 +1,7 @@
-trojanda-book-reader
+Trojanda Book Reader
 ====================
 
-Trojanda Book Reader — a ePub reader application. It's written on Electron with usages TypeScript.
+ A ePub reader application. It's written on Electron with usage of TypeScript.
 
 Dark mode:
 ![Trojanda Book Reader — Dark mode](screenshots/Trojanda-book-reader_dark-mode_at_2020-06-15_11-53-24.png)
