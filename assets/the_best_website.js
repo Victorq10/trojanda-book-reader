@@ -9,10 +9,12 @@
             function init_toggle(elmt_id, toggle_class_name, default_state) {
                 var html = document.getElementsByTagName("html")[0],
                     elmt = document.getElementById(elmt_id),
+                    application_content = document.getElementById('js-application-content'),
                     prev_toggle_txt_idx = !1,
                     toggle_class = function () {
                         var toggle_txt_idx = Number(prev_toggle_txt_idx = !prev_toggle_txt_idx);
                         html.classList[toggle_class_methods[toggle_txt_idx]](toggle_class_name)
+                        application_content.focus();
                     };
                     if (default_state) toggle_class();
                 elmt.addEventListener(eventName, toggle_class, !1)
