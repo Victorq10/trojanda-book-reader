@@ -104,8 +104,8 @@ UnZip
 > Stuk/jszip                  — https://github.com/Stuk/jszip \
 > kriskowal/zip               — https://github.com/kriskowal/zip
 
-see [https://blog.csdn.net/meimeilive/article/details/103150412] and
-[https://github.com/open-xml-templating/pizzip/blob/master/documentation/howto/read_zip.md]
+see <https://blog.csdn.net/meimeilive/article/details/103150412> and
+https://github.com/open-xml-templating/pizzip/blob/master/documentation/howto/read_zip.md
 - import PizZip from 'pizzip'
 - import JSZipUtils from 'jszip-utils'
 
