@@ -204,8 +204,8 @@ class CurrentBookHelper {
         for (const navPoint of navPoints) {
             let li_elmt = document.createElement('li');
             let a_elmt = document.createElement('a');
-            a_elmt.textContent = navPoint.label || "";
-            a_elmt.href = navPoint.full_filepath || ""; //navPoint.src;
+            a_elmt.textContent = utils.default_text(navPoint.label, "<Без назви>");
+            a_elmt.href = navPoint.full_filepath || "";
             a_elmt.dataset.spineSrc = navPoint.src;
             li_elmt.appendChild(a_elmt);
             if (navPoint.sub_nav_points && navPoint.sub_nav_points.length > 0) {
@@ -472,6 +472,12 @@ class ProgressStatusComponent {
     }
 }
 class Utils {
+    default_text(text: string, default_text: string): string {
+        if (!text || /^\s+$/.test(text)) {
+            return default_text;
+        }
+        return text;
+    }
     remove_elemens(elmt: HTMLElement, tagName: string) {
         let elements = elmt.getElementsByTagName(tagName);
         for (let i = 0; i < elements.length; i++) {
