@@ -66,41 +66,19 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     }
     ipcRenderer.send('open-previous-book', 'ping')
-    addEvent('js-open-book-btn', (event: MouseEvent) => {
-        ipcRenderer.send('open-book', 'ping')
-    });
-    addEvent('js-toc-content-btn', (event: MouseEvent) => {
-        show_content_by_id('js-toc-content');
-    });
-    addEvent('js-prev-chapter-btn', (event: MouseEvent) => {
-        if (current_book) {
-            current_book.display_prev_spine();
-        }
-    });
-    addEvent('js-next-chapter-btn', (event: MouseEvent) => {
-        if (current_book) {
-            current_book.display_next_spine();
-        }
-    });
-    addEvent('js-reading-content-btn', (event: MouseEvent) => {
-        show_content_by_id('js-reading-content');
-    });
-    addEvent('js-book-info-content-btn', (event: MouseEvent) => {
-        show_content_by_id('js-book-info-content');
-    });
-    addEvent('js-library-content-btn', (event: MouseEvent) => {
-        show_content_by_id('js-library-content');
-    });
-    addEvent('js-settings-content-btn', (event: MouseEvent) => {
-        show_content_by_id('js-settings-content');
-    });
-    addEvent('js-romanize-btn', (event: MouseEvent) => {
-        romanization_helper.toggle_romanized_text();
-        focus_application_content();
-    });
+    addEvent('js-open-book-btn', (event: MouseEvent) => Actions.open_book());
+    addEvent('js-toc-content-btn', (event: MouseEvent) => Actions.show_toc_content());
+    addEvent('js-prev-chapter-btn', (event: MouseEvent) => Actions.show_prev_chapter());
+    addEvent('js-next-chapter-btn', (event: MouseEvent) => Actions.show_next_chapter());
+    addEvent('js-reading-content-btn', (event: MouseEvent) => Actions.show_reading_content());
+    addEvent('js-book-info-content-btn', (event: MouseEvent) => Actions.show_book_info_content());
+    addEvent('js-library-content-btn', (event: MouseEvent) => Actions.show_library_content());
+    addEvent('js-settings-content-btn', (event: MouseEvent) => Actions.show_settings_content());
+    addEvent('js-romanize-btn', (event: MouseEvent) => Actions.romanize());
 
     progress_status_component.init_reading_percent();
     dark_light_mode_compoment.init();
+    init_accelerator_keys();
 });
 
 document.addEventListener('click', (event) => {
@@ -117,6 +95,78 @@ document.addEventListener('click', (event) => {
         }
     }
 });
+
+class Actions {
+    static open_book() {
+        ipcRenderer.send('open-book', 'ping')
+    }
+    static show_toc_content() {
+        show_content_by_id('js-toc-content');
+    }
+    static show_prev_chapter() {
+        if (current_book) {
+            current_book.display_prev_spine();
+        }
+    }
+    static show_next_chapter() {
+        if (current_book) {
+            current_book.display_next_spine();
+        }
+    }
+    static show_reading_content() {
+        show_content_by_id('js-reading-content');
+    }
+    static show_book_info_content() {
+        show_content_by_id('js-book-info-content');
+    }
+    static show_library_content() {
+        show_content_by_id('js-library-content');
+    }
+    static show_settings_content() {
+        show_content_by_id('js-settings-content');
+    }
+    static toggle_contrast_mode() {
+        dark_light_mode_compoment.toggle_contrast_mode();
+    }
+    static toggle_inverted_mode() {
+        dark_light_mode_compoment.toggle_inverted_mode();
+    }
+    static romanize() {
+        romanization_helper.toggle_romanized_text();
+        focus_application_content();
+    }
+}
+
+function init_accelerator_keys() {
+    document.addEventListener('keydown', (event) => {
+        if (event.altKey || event.ctrlKey || event.shiftKey || event.repeat) {
+            return;
+        }
+        let processed_key = true;
+        console.log(event);
+        const cc = event.key; //event.charCode
+        switch (cc) {
+            case 'o': Actions.open_book(); break;
+            case 't': Actions.show_toc_content(); break;
+            case 'r': Actions.show_reading_content(); break;
+            case 'n': case 'ArrowRight': Actions.show_next_chapter(); break;
+            case 'p': case 'ArrowLeft': Actions.show_prev_chapter(); break;
+            case 'i': Actions.show_book_info_content(); break;
+            case 'l': Actions.show_library_content(); break;
+            case 's': Actions.show_settings_content(); break;
+            case 'c': Actions.toggle_contrast_mode(); break;
+            case 'd': Actions.toggle_inverted_mode(); break;
+            case 'z': Actions.romanize(); break;
+            default:
+                processed_key = false;
+        }
+        if (processed_key) {
+            event.preventDefault();
+            event.stopPropagation();
+   
+        }
+    })
+}
 
 function focus_application_content() {
     document.getElementById('js-application-content').focus();
@@ -140,13 +190,15 @@ function is_reading_mode() {
 
 function scroll_to_hash_or_start_of_content(hash: string) {
     const application_content = document.getElementById('js-application-content') as HTMLElement;
-    const target_elmt = application_content.querySelector('#' +hash);
-    if (target_elmt) {
-        target_elmt.scrollIntoView();
-    } else {
+    if (hash) {
+        const target_elmt = application_content.querySelector('#' +hash);
+        if (target_elmt) {
+            target_elmt.scrollIntoView();
+            return;
+        }
         console.warn(`There is no elements with “${hash}” id to navigate, so navigate to start of content.`)
-        scroll_to_start_of_content();
     }
+    scroll_to_start_of_content();
 }
 
 function scroll_to_start_of_content() {
@@ -412,6 +464,15 @@ class DarkLightModeCompoment {
         rainbow_text();
     }
 
+    toggle_contrast_mode() {
+        this.toggle_actions_map.get('js-contrast-btn')();
+    }
+    toggle_inverted_mode() {
+        this.toggle_actions_map.get('js-invmode-btn')();
+    }
+
+    toggle_actions_map = new Map<string, Function>()
+
     private init_toggle(elmt_id: string, toggle_class_name: string) {
         const html = document.getElementsByTagName("html")[0];
         const elmt = document.getElementById(elmt_id);
@@ -420,6 +481,7 @@ class DarkLightModeCompoment {
             html.classList.toggle(toggle_class_name);
             application_content.focus();
         };
+        this.toggle_actions_map.set(elmt_id, () => toggle_class());
         elmt.addEventListener(this.eventName, toggle_class, false);
     };
 }
@@ -459,8 +521,8 @@ class ProgressStatusComponent {
         const current_spine_idx = !current_book ? -1 : current_book.get_current_spine_idx();
         const number_of_spines = !current_book ? 0 : current_book.get_number_of_spines();
         return {
-            chapter_info: `chapter ${current_spine_idx + 1} of ${number_of_spines}`,
-            pages_info: `page ${current_page} of ${number_of_pages}`,
+            chapter_info: `file ${current_spine_idx + 1} of ${number_of_spines}`,
+            pages_info: `screen ${current_page} of ${number_of_pages}`,
             percent_info: `progress ${percent}%`
         };
        /*  this.chapter_info.textContent = `Chapter ${current_spine_idx + 1} / ${number_of_spines}`;
