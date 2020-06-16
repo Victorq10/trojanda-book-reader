@@ -16,6 +16,18 @@ let current_book: CurrentBookHelper;
 let content_ids = ['js-toc-content', 'js-reading-content', 'js-book-info-content',
     'js-library-content', 'js-settings-content'];
 
+ipcRenderer.on('display-book', (event: any, trojanda_book: TrojandaBook) => {
+    if (trojanda_book.toc_xmldoc === undefined) {
+        console.log('There is data in the book');
+    } else {
+        current_book = new CurrentBookHelper(trojanda_book);
+        current_book.init_and_display_toc_content();
+    }
+})
+
+ipcRenderer.on('asynchronous-reply', (event: any, arg: any) => {
+    console.log(arg) // prints "pong"
+});
 
 // It has the same sandbox as a Chrome extension.
 window.addEventListener('DOMContentLoaded', () => {
@@ -88,19 +100,7 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 
     progress_status_component.init_reading_percent();
-});
-
-ipcRenderer.on('display-book', (event: any, trojanda_book: TrojandaBook) => {
-    if (trojanda_book.toc_xmldoc === undefined) {
-        console.log('There is data in the book');
-    } else {
-        current_book = new CurrentBookHelper(trojanda_book);
-        current_book.init_and_display_toc_content();
-    }
-})
-
-ipcRenderer.on('asynchronous-reply', (event: any, arg: any) => {
-    console.log(arg) // prints "pong"
+    dark_light_mode_compoment.init();
 });
 
 document.addEventListener('click', (event) => {
@@ -226,7 +226,9 @@ class CurrentBookHelper {
             utils.remove_elemens(reading_content_elmt, 'style');
             utils.remove_elemens(reading_content_elmt, 'title');
             utils.remove_elemens(reading_content_elmt, 'base');
-            utils.remove_class_and_style_attributies(reading_content_elmt);
+            if (filepath.includes('/currentBook/')) {
+                utils.remove_class_and_style_attributies(reading_content_elmt);
+            }
             romanization_helper.check_and_romanize_text();
             show_content_by_id('js-reading-content');
             scroll_to_start_of_content();
@@ -274,7 +276,7 @@ class CurrentBookHelper {
             i++;
         }
         if (current_idx === -1) {
-            console.warn('There is no current_spine_src among spine_manifest_items')
+            //console.warn('There is no current_spine_src among spine_manifest_items')
         }
         return current_idx;
     }
@@ -363,6 +365,47 @@ class RomanizationHelper {
     
 }
 
+class DarkLightModeCompoment {
+    eventName: string;
+    constructor() {
+        this.eventName = ("ontouchstart" in window ? "touchend" : "click");
+    }
+    init() {
+        this.init_rainbow();
+        this.init_toggle("js-contrast-btn", "contrast");
+        this.init_toggle("js-invmode-btn", "inverted");
+    }
+    private init_rainbow() {
+        let rainbow_red_color = 0;
+        const rainbow_text = () => {
+            const rainbow_elmts = document.getElementsByClassName("colored") as HTMLCollectionOf<HTMLElement>;
+            if (rainbow_elmts.length) {
+                let color = "hsl(" + rainbow_red_color + ", 80%, 60%)";
+                let d = rainbow_red_color + 5;
+                rainbow_red_color = d > 360 ? 0 : d;
+                for(let i = 0; i < rainbow_elmts.length; i++) {
+                    rainbow_elmts[i].style.color = color;
+                }
+                window.setTimeout(rainbow_text, 30);
+            } else {
+                window.setTimeout(rainbow_text, 3000);
+            }
+        };
+        rainbow_text();
+    }
+
+    private init_toggle(elmt_id: string, toggle_class_name: string) {
+        const html = document.getElementsByTagName("html")[0];
+        const elmt = document.getElementById(elmt_id);
+        const application_content = document.getElementById('js-application-content');
+        const toggle_class = () => {
+            html.classList.toggle(toggle_class_name);
+            application_content.focus();
+        };
+        elmt.addEventListener(this.eventName, toggle_class, false);
+    };
+}
+
 class ProgressInfo {
     chapter_info: string;
     pages_info: string;
@@ -442,3 +485,4 @@ class Utils {
 const romanization_helper = new RomanizationHelper()
 const utils = new Utils();
 const progress_status_component = new ProgressStatusComponent();
+const dark_light_mode_compoment = new DarkLightModeCompoment();
