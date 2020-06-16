@@ -138,6 +138,17 @@ function is_reading_mode() {
     return document.getElementById('js-reading-content').style.display !== 'none';
 }
 
+function scroll_to_hash_or_start_of_content(hash: string) {
+    const application_content = document.getElementById('js-application-content') as HTMLElement;
+    const target_elmt = application_content.querySelector('#' +hash);
+    if (target_elmt) {
+        target_elmt.scrollIntoView();
+    } else {
+        console.warn(`There is no elements with “${hash}” id to navigate, so navigate to start of content.`)
+        scroll_to_start_of_content();
+    }
+}
+
 function scroll_to_start_of_content() {
     const application_content = document.getElementById('js-application-content');
     application_content.scroll({ 
@@ -208,7 +219,17 @@ class CurrentBookHelper {
 
     async load_and_display_file_content(filepath: string): Promise<any> {
         const t1 = new Date();
-        return await fs.readFile(filepath, 'utf-8').then((data) => {
+
+        // simulate browser behaviour for relative paths (links inside the books)
+        if (!filepath.startsWith('file://') && !filepath.startsWith('/') ) {
+            let base = document.getElementsByTagName('base')[0] as HTMLElement;
+            const base_dir = base.getAttribute('href');
+            filepath = path.resolve(base_dir, filepath);
+        }
+
+        filepath = window.decodeURI(filepath.replace('file://', '')) // existed link on the page with full path
+        const filepath_and_hash = filepath.split('#');
+        return await fs.readFile(filepath_and_hash[0], 'utf-8').then((data) => {
             console.log(`Reading  ${data.length} byte from “${filepath}” file take ${utils.format_log_time_string(t1)}`);
             let reading_content_elmt = document.getElementById('js-reading-content');
 
@@ -231,37 +252,34 @@ class CurrentBookHelper {
             }
             romanization_helper.check_and_romanize_text();
             show_content_by_id('js-reading-content');
-            scroll_to_start_of_content();
+            scroll_to_hash_or_start_of_content(filepath_and_hash[1])
         });
     }
 
     load_and_display_manifestItem(manifest_item: ManifestItem) {
         let href = manifest_item.full_filepath;
         console.log('Opening a ManifestItem “' + manifest_item.id + '”')
-        let filepath = window.decodeURI(href.replace('file://', '')) // existed link on the page with full path
-        this.load_and_display_file_content(filepath)
+        this.load_and_display_file_content(href)
             .then(() => {
                 if (manifest_item.href) {
                     current_spine_src = manifest_item.href;
                 }
             })
             .catch((err) => {
-                console.log('Error on reading “' + filepath + '” file: ' + err.message);
+                console.log('Error on reading “' + href + '” file: ' + err.message);
             });
     }
 
     load_and_display_link(target: HTMLElement): void {
         let href = target.getAttribute('href')
-        //console.log(`A “${target.textContent}”(${href}) link was clicked`)
-        let filepath = window.decodeURI(href.replace('file://', '')) // existed link on the page with full path
-        this.load_and_display_file_content(filepath)
+        this.load_and_display_file_content(href)
             .then(() => {
                 if (target.dataset.spineSrc) {
                     current_spine_src = target.dataset.spineSrc;
                 }
             })
             .catch((err) => {
-                console.log('Error on reading “' + filepath + '” file: ' + err.message);
+                console.log('Error on reading “' + href + '” file: ' + err.message);
             });
     }
 
