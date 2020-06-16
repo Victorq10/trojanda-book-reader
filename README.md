@@ -3,13 +3,13 @@ Trojanda Book Reader
 
  A ePub reader application. It's written on Electron with usage of TypeScript.
 
-Dark mode:
+Dark mode: \
 ![Trojanda Book Reader — Dark mode](screenshots/Trojanda-book-reader_dark-mode_at_2020-06-15_11-53-24.png)
 
-Light mode:
+Light mode: \
 ![Trojanda Book Reader — Light mode](screenshots/Trojanda-book-reader_light-mode_at_2020-06-15_11-54-16.png)
 
-Dark romanized mode:
+Dark romanized mode: \
 ![Trojanda Book Reader — Dark romanized mode](screenshots/Trojanda-book-reader_dark-romanized-mode_at_2020-06-15_11-55-11.png)
 
 INSTALLATION
@@ -190,6 +190,7 @@ DOCUMANTATION RESOURCES
 
 RESOURCES
 ---------
+- https://www.w3.org/publishing/epub/epub-ocf.html — ePub specification
 - https://matthewhorne.me/setup-typescript-project/
 - https://sqlite.org/cli.html
 - https://derickbailey.com/2016/03/09/creating-a-true-singleton-in-node-js-with-es6-symbols/
