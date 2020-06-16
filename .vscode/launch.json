@@ -13,17 +13,6 @@
       "outputCapture": "std"
     },
     {
-      "name": "Launch test.js",
-      "type": "node",
-      "request": "launch",
-      "cwd": "${workspaceFolder}",
-      "runtimeExecutable": "node",
-      "args": [
-        "./build/test.js"
-      ],
-      "outputCapture": "std"
-    },
-    {
       "name": "Debug Main Process",
       "type": "node",
       "request": "launch",
