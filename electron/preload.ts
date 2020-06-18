@@ -530,7 +530,8 @@ class ProgressStatusComponent {
     }
     get_progress_info(): ProgressInfo {
         const application_content = document.getElementById('js-application-content');
-        const percent = ((application_content.scrollTop + application_content.clientHeight) / application_content.scrollHeight * 100).toFixed(1);
+        const percent_start = ((application_content.scrollTop) / application_content.scrollHeight * 100).toFixed(1);
+        const percent_end = ((application_content.scrollTop + application_content.clientHeight) / application_content.scrollHeight * 100).toFixed(1);
         const number_of_pages = (application_content.scrollHeight / application_content.clientHeight).toFixed(1);
         const current_page = ((application_content.scrollTop + application_content.clientHeight)
             / application_content.clientHeight).toFixed(1);
@@ -539,7 +540,7 @@ class ProgressStatusComponent {
         return {
             chapter_info: `file ${current_spine_idx + 1} of ${number_of_spines}`,
             pages_info: `screen ${current_page} of ${number_of_pages}`,
-            percent_info: `progress ${percent}%`
+            percent_info: `progress ${percent_start}–${percent_end}%`
         };
        /*  this.chapter_info.textContent = `Chapter ${current_spine_idx + 1} / ${number_of_spines}`;
         this.pages_info.textContent = `page ${current_page} / ${number_of_pages}`;
