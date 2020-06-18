@@ -79,6 +79,7 @@ window.addEventListener('DOMContentLoaded', () => {
     progress_status_component.init_reading_percent();
     dark_light_mode_compoment.init();
     init_accelerator_keys();
+    new FullscreenTrigger();
 });
 
 document.addEventListener('click', (event) => {
@@ -177,11 +178,11 @@ function show_content_by_id(elmt_id: string): void {
         const elmt = document.getElementById(content_id);
         if (content_id === elmt_id) {
             elmt.style.display = '';
-            focus_application_content();
         } else {
             elmt.style.display = 'none';
         }
     }
+    focus_application_content();
 }
 
 function is_reading_mode() {
@@ -326,6 +327,7 @@ class CurrentBookHelper {
         let href = target.getAttribute('href')
         this.load_and_display_file_content(href)
             .then(() => {
+                // TODO: when navigating by link in the book to annotation there is no spineSrc. Charpter is not updated
                 if (target.dataset.spineSrc) {
                     current_spine_src = target.dataset.spineSrc;
                 }
@@ -476,16 +478,30 @@ class DarkLightModeCompoment {
     private init_toggle(elmt_id: string, toggle_class_name: string) {
         const html = document.getElementsByTagName("html")[0];
         const elmt = document.getElementById(elmt_id);
-        const application_content = document.getElementById('js-application-content');
         const toggle_class = () => {
             html.classList.toggle(toggle_class_name);
-            application_content.focus();
+            focus_application_content();
         };
         this.toggle_actions_map.set(elmt_id, () => toggle_class());
         elmt.addEventListener(this.eventName, toggle_class, false);
     };
 }
 
+class FullscreenTrigger {
+    constructor(){
+        const html = document.querySelector('html');
+        const check_fullscreen = () => {
+            if (html.classList.contains('fullscreen') != this.is_fullscreen_now() ) {
+                html.classList.toggle('fullscreen');
+            }
+            setTimeout(check_fullscreen, 75);
+        }
+        check_fullscreen();
+    }
+    is_fullscreen_now() {
+        return window.screenTop === 0 && window.screenY === 0;
+    }
+}
 class ProgressInfo {
     chapter_info: string;
     pages_info: string;
@@ -494,12 +510,12 @@ class ProgressInfo {
 
 class ProgressStatusComponent {
     init_reading_percent() {
-        const chapter_info = document.getElementById('chapters-info');
-        const pages_info = document.getElementById('pages-info');
-        const percent_info = document.getElementById('percent-info');
-        const elmt = document.getElementById('js-progress-info');
+        const chapter_info = document.querySelectorAll('.chapters-info');
+        const pages_info = document.querySelectorAll('.pages-info');
+        const percent_info = document.querySelectorAll('.percent-info');
+        const elmt = document.querySelectorAll('.js-progress-info');
         (function update_precent() {
-            if (elmt) {
+            if (elmt.length) {
                 if (is_reading_mode()) {
                     const progress_info = progress_status_component.get_progress_info()
                     utils.update_text_content(chapter_info, progress_info.chapter_info);
@@ -551,9 +567,11 @@ class Utils {
         const current_time = new Date();
         return `${(current_time.getTime() - start_time.getTime()) / 1000}s`;
     }
-    update_text_content(elmt:  HTMLElement, text_content: string): void {
-        if (elmt.textContent !== text_content) {
-            elmt.textContent = text_content;
+    update_text_content(elmts:  NodeListOf<Element>, text_content: string): void {
+        for(let i = 0; i < elmts.length; i++) {
+            if (elmts[i].textContent !== text_content) {
+                elmts[i].textContent = text_content;
+            }
         }
     }    
     remove_class_and_style_attributies(elmt: HTMLElement) {

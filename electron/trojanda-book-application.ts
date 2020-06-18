@@ -104,6 +104,9 @@ export class TrojandaBookApplication {
     }
 
     open_epub_book() {
+        console.log(`isFullScreen: ${this.win.isFullScreen()}`)
+        this.win.setFullScreen(!this.win.isFullScreen());
+        return;
         let book_dir = __dirname + '/../books';
         if (fs.existsSync(book_dir) && !fs.statSync(book_dir).isDirectory()) {
             book_dir = __dirname;

@@ -37,6 +37,59 @@ a {
 }
 
 
+/* <FULLSCREEN MODE> */
+.fullscreen #js-application-menu {
+    display: none;
+}
+.fullscreen section:focus#js-application-content {
+    border-top: 5px solid transparent;
+}
+.fullscreen #js-application-footer {
+    display: flex;
+}
+/* </FULLSCREEN MODE> */
+
+
+
+
+
+
+/* <FOOTER> */
+#js-application-footer {
+    display: none;
+}
+#js-application-footer #footer-content {
+    width: 800px;
+    padding: 0 16px 0 0; /* scroll bar width */
+    margin: 0 auto;
+    text-align: left;
+}
+#js-application-footer #footer-content .js-progress-info {
+    display: flex;
+    flex-direction: row;
+    justify-content: stretch;
+    align-items: stretch;
+}
+#js-application-footer #footer-content .js-progress-info div {
+    flex: auto;
+    font-size: 16px;
+}
+#js-application-footer #footer-content .js-progress-info .percent-info {
+    text-align: left;
+}
+#js-application-footer #footer-content .js-progress-info .pages-info {
+    text-align: center;
+}
+#js-application-footer #footer-content .js-progress-info .chapters-info {
+    text-align: right;
+}
+/* </FOOTER> */
+
+
+
+
+
+
 #js-application-menu button:focus, section:focus#js-application-content {
     outline   : none;
     box-shadow: none;
@@ -77,7 +130,7 @@ section#js-application-content {
     cursor          : pointer;
     color           : inherit;
 }
-#js-application-menu button#js-progress-info {
+#js-application-menu button.js-progress-info {
     font-size: 16px;
     text-align: left;
     padding: 0 12px;
