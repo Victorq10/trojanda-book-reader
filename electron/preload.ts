@@ -18,7 +18,7 @@ let content_ids = ['js-toc-content', 'js-reading-content', 'js-book-info-content
 
 ipcRenderer.on('display-book', (event: any, trojanda_book: TrojandaBook) => {
     if (trojanda_book.toc_xmldoc === undefined) {
-        console.log('There is data in the book');
+        console.log('There is NO data in the book');
     } else {
         current_book = new CurrentBookHelper(trojanda_book);
         current_book.init_and_display_toc_content();
@@ -192,7 +192,8 @@ function is_reading_mode() {
 function scroll_to_hash_or_start_of_content(hash: string) {
     const application_content = document.getElementById('js-application-content') as HTMLElement;
     if (hash) {
-        const target_elmt = application_content.querySelector('#' +hash);
+        //const target_elmt = application_content.querySelector('#' +hash); // error when id starts with Number
+        const target_elmt = document.getElementById(hash);
         if (target_elmt) {
             target_elmt.scrollIntoView();
             return;

@@ -76,6 +76,7 @@ type TrojandaBookCallback = (book: TrojandaBook) => void
 export class TrojandaBook {
     filepath: string;
     files: string[] = [];
+    book_basedir: string = ''; // it is related to container.xml file
     content_basedir: string = '';
 
     manifest_items: ManifestItem[] = []; // here is metadata and all resources
@@ -256,9 +257,26 @@ export class TrojandaBook {
         }
 
     }
-
-    parse_container_file() : void {
+    find_container_file(): string {
         let container_filepath = path.resolve(CURRENT_BOOK_PATH, 'META-INF', 'container.xml');
+        if (!fs.existsSync(container_filepath)) {
+            const files = get_all_files(CURRENT_BOOK_PATH);
+            console.log('All book files (size: ' + this.files.length + '):')
+            for (const file of files) {
+                const basename = path.basename(file);
+                if (basename === 'container.xml') {
+                    container_filepath = file;
+                    break;
+                }
+            }
+        }
+        if (fs.existsSync(container_filepath)) {
+            this.book_basedir = path.dirname(path.dirname(container_filepath));
+        }
+        return container_filepath;
+    }
+    parse_container_file() : void {
+        let container_filepath = this.find_container_file();
         this.container_xml_doc = read_xml_file(container_filepath);
     }
 
@@ -344,7 +362,7 @@ export class TrojandaBook {
             console.warn("WARNING: rootfile full-path attribute is absant or empty")
         }
         if (root_filepath !== null) {
-            this.root_opf_filepath = path.resolve(CURRENT_BOOK_PATH, root_filepath);
+            this.root_opf_filepath = path.resolve(this.book_basedir, root_filepath);
             this.content_basedir = path.dirname(this.root_opf_filepath);
         }
         return this.root_opf_filepath;
