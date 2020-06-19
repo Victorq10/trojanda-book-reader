@@ -88,7 +88,7 @@ document.addEventListener('click', (event) => {
         event.preventDefault()
         event.stopPropagation();
         current_book.load_and_display_link(target);
-    } else if (target.classList.contains('application-content-section') || target.id == 'js-application-content') {
+    } else if (utils.closest(target, 'js-application-content')) {
         if (event.clientY < document.body.clientHeight / 2) {
             scroll_one_page(true);
         } else {
@@ -552,6 +552,16 @@ class ProgressStatusComponent {
     }
 }
 class Utils {
+    closest(target: HTMLElement, className: string) {
+        let current_elmt = target;
+        while(current_elmt) {
+            if (current_elmt.classList.contains(className)) {
+                return current_elmt;
+            }
+            current_elmt = current_elmt.parentElement;
+        }
+        return null;
+    }
     default_text(text: string, default_text: string): string {
         if (!text || /^\s+$/.test(text)) {
             return default_text;
