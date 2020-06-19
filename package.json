@@ -5,8 +5,8 @@
   "main": "main.js",
   "scripts": {
     "start_origin": "electron .",
-    "build": "tsc -p electron/tsconfig.json",
-    "watch": "tsc -w -p electron/tsconfig.json",
+    "build": "tsc -p ./tsconfig.json",
+    "watch": "tsc -w -p ./tsconfig.json",
     "start:dev": "npm run build && electron ./build/main.js",
     "start": "electron ./build/main.js",
     "test": "echo \"Error: no test specified\" && exit 1"
