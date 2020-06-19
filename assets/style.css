@@ -2,10 +2,69 @@
     font-family: 'Konvalija', 'Trojanda UI', Arial, Helvetica, sans-serif;
 }
 
+/*
+FLEX DESIGN
+===========
+```
+.container-example {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+```
+DOCUMENTATION FROM: https://developer.mozilla.org/en-US/docs/Web/CSS/display
+
+START POINT proterties ARE display, flex, flex-flow, place-items, place-content, place-self, gap, box-sizing:
+-------------------------------------------------------------------------------------------------------------
+```
+display       — values flex, grid
+flex          — shorthand for flex-grow, flex-shrink, and flex-basis.
+flex-flow     — shorthand property for flex-direction and flex-wrap properties.
+place-items   — shorthand property sets the align-items and justify-items properties.
+place-content — shorthand for align-content and justify-content. 
+place-self    — shorthand property sets both the align-self and justify-self properties. 
+gap           — shorthand for row-gap and column-gap.
+box-sizing    — values 
+                «content-box» and 
+                «border-box» (when width = border + padding + width, and height = border + padding + height )
+```
+
+LEGACY dislpay VALUES ARE inline-block, inline-flex:
+----------------------------------------------------
+```
+inline-block  — It is equivalent to `inline flow-root`.
+inline-flex   — It is equivalent to `inline flex`.
+```
+
+STANDALONE properties:
+----------------------
+```
+align-content — property sets the distribution of space between and around content 
+                items along a flexbox's cross-axis or a grid's block axis.
+align-items
+align-self
+
+flex
+flex-wrap
+flex-direction
+
+justify-content
+justify-items
+justify-self
+
+place-content
+place-items   — shorthand property sets the align-items and justify-items properties, respectively. 
+                If the second value is not set, the first value is also used for it.
+place-self
+```
+*/
+
 html, html body {
     display: flex;
+    /* flex-flow is a shorthand property for flex-direction and flex-wrap  */
     flex-flow: column nowrap;
-    flex-direction: column;
+    /* flex-direction: column; */
+    /* flex-wrap: nowrap; */
     height: 100%;
     padding: 0;
     margin: 0;
