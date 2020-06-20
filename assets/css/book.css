@@ -1,0 +1,30 @@
+* {
+    font-family: 'Konvalija', 'Trojanda UI', Arial, Helvetica, sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    text-align: left;
+    border-bottom: 5px solid gray;
+}
+/* 
+§ — &sect; Section sign
+¶ — &para; Pilcrow (paragraph mark, paragraph sign, paraph, alinea)
+ */
+/*
+h1::before { content: 'H1. '; text-align: right; color: gray; }
+h2::before { content: 'H2. '; text-align: right; color: gray; }
+h3::before { content: 'H3. '; text-align: right; color: gray; }
+h4::before { content: 'H4. '; text-align: right; color: gray; }
+h5::before { content: 'H5. '; text-align: right; color: gray; }
+h6::before { content: 'H6. '; text-align: right; color: gray; }
+ */
+
+/* h1::after, h2::after, h3::after, h4::after, h5::after, h6::after {
+    content: ' ¶';
+    text-align: right;
+    color: gray;
+}
+ */
+a {
+    text-decoration: none;
+}

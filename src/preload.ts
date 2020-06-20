@@ -7,6 +7,7 @@ import * as fs from 'fs-extra'
 
 import { TrojandaBook, NavPoint, ManifestItem } from './trojanda-book';
 import { romanize } from './romanization/romanization';
+import { Statistics } from './statistics/statistics';
 //import { TrojandaBookApplication } from './trojanda-book-application';
 //const trojandaBookApplication = global.trojandaBookApplicationInstance as TrojandaBookApplication;
 
@@ -59,10 +60,10 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     // init buttons events
-    const addEvent = (elmt_id: string, handler: Function) => {
+    const addEvent = (elmt_id: string, handler: Function, event_name:string = 'click') => {
         const btn = document.getElementById(elmt_id)
         if (btn !== null) {
-            btn.addEventListener('click', (event: MouseEvent) => handler(event))
+            btn.addEventListener(event_name, (event: MouseEvent) => handler(event))
         }
     }
     ipcRenderer.send('open-previous-book', 'ping')
@@ -75,6 +76,13 @@ window.addEventListener('DOMContentLoaded', () => {
     addEvent('js-library-content-btn', (event: MouseEvent) => Actions.show_library_content());
     addEvent('js-settings-content-btn', (event: MouseEvent) => Actions.show_settings_content());
     addEvent('js-romanize-btn', (event: MouseEvent) => Actions.romanize());
+    addEvent('application-property-swap-i-y', (event: Event) => Actions.apply_swap_i_y_and_romanize_text(), 'change');
+    addEvent('js-calculate-statistics', (event: Event) => {
+        const elmt = document.getElementById('js-application-statistics');
+        const options = document.querySelector('input[name="number-of-letters"]:checked') as HTMLInputElement;
+        const statistics = Statistics.count_symbols(parseInt(options.value));
+        elmt.innerHTML = statistics.out;
+    });
 
     progress_status_component.init_reading_percent();
     dark_light_mode_compoment.init();
@@ -88,7 +96,7 @@ document.addEventListener('click', (event) => {
         event.preventDefault()
         event.stopPropagation();
         current_book.load_and_display_link(target);
-    } else if (utils.closest(target, 'js-application-content')) {
+    } else if (!utils.is_control(target) && utils.closest(target, 'js-application-content')) {
         if (event.clientY < document.body.clientHeight / 2) {
             scroll_one_page(true);
         } else {
@@ -136,8 +144,25 @@ class Actions {
         romanization_helper.toggle_romanized_text();
         focus_application_content();
     }
+    static swap_i_y_and_romanize_text() {
+        const elmt = document.getElementById('application-property-swap-i-y') as HTMLInputElement;
+        elmt.checked = !elmt.checked;
+        Actions.apply_swap_i_y_and_romanize_text();
+    }
+    static apply_swap_i_y_and_romanize_text() {
+        romanization_helper.toggle_romanized_text();
+        romanization_helper.toggle_romanized_text();
+    }
 }
-
+class Settings {
+    static get swap_i_y(): boolean {
+        const elmt = document.getElementById('application-property-swap-i-y') as HTMLInputElement;
+        if (elmt) {
+            return elmt.checked;
+        }
+        return false;
+    }
+}
 function init_accelerator_keys() {
     document.addEventListener('keydown', (event) => {
         if (event.altKey || event.ctrlKey || event.shiftKey || event.repeat) {
@@ -158,6 +183,7 @@ function init_accelerator_keys() {
             case 'c': Actions.toggle_contrast_mode(); break;
             case 'd': Actions.toggle_inverted_mode(); break;
             case 'z': Actions.romanize(); break;
+            case 'w': Actions.swap_i_y_and_romanize_text(); break;
             default:
                 processed_key = false;
         }
@@ -391,7 +417,7 @@ class RomanizationHelper {
             this.romanize_text(true);
         }
     }
-        async romanize_text(is_romanize: boolean) {
+    async romanize_text(is_romanize: boolean) {
         let t1 = new Date();
         if (is_romanize) {
             this.romanized_text_for_revert.clear();
@@ -409,7 +435,7 @@ class RomanizationHelper {
                     let uk_text : string, la_text: string;
                     if (is_romanize) {
                         uk_text = node.textContent;
-                        la_text = romanize(node.textContent);
+                        la_text = romanize(node.textContent, Settings.swap_i_y);
                         node.textContent = la_text;
                         this.romanized_text_for_revert.set(node, uk_text);
                     } else { // revert romanization
@@ -552,6 +578,27 @@ class ProgressStatusComponent {
     }
 }
 class Utils {
+    is_control(target: HTMLElement): boolean {
+        if (target.tagName === 'INPUT' 
+            || target.tagName === 'SELECT' 
+            || target.tagName === 'TEXTAREA'
+            || target.tagName === 'LABEL'
+            || target.tagName === 'PRE'
+            || this.is_button(target)) {
+                return true;
+        }
+        return false;
+    }
+    is_button(target: HTMLElement): boolean {
+        let current_elmt = target;
+        while(current_elmt) {
+            if (current_elmt.nodeName === 'BUTTON') {
+                return true;
+            }
+            current_elmt = current_elmt.parentElement;
+        }
+        return false;
+    }
     closest(target: HTMLElement, className: string) {
         let current_elmt = target;
         while(current_elmt) {

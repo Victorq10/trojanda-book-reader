@@ -1,0 +1,19 @@
+/* Let's get this party started */
+::-webkit-scrollbar {
+    width: 16px;
+}
+/* Track */
+::-webkit-scrollbar-track {
+    background-color: #AAAAAA70;
+    border-radius: 2px;
+}
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background-color: #a1a1a1FF;
+    border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:window-inactive {
+    background-color: #a1a1a1FF;
+    border-radius: 2px;
+}
+

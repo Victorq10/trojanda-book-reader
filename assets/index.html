@@ -43,8 +43,8 @@
 
       <div id="js-settings-content" class="application-content-section" style="display: none;">
 
-        <h2>Keyboard shortcuts:</h2>
-        <pre style="font-family: 'Konvalija Mono', monospace;">
+        <h3>Keyboard shortcuts:</h3>
+        <pre class="application-statistics-form-content" style="font-family: 'Konvalija Mono', monospace;">
   “o”               — open book 
   “t”               — show toc content 
   “r”               — show reading content 
@@ -56,21 +56,49 @@
   “c”               — toggle contrast mode
   “d”               — toggle inverted mode
   “z”               — romanize
-        </pre>
-        <hr>
-        <!-- 
-        We are using node <script>document.write(process.versions.node)</script>,
-        Chrome <script>document.write(process.versions.chrome)</script>,
-        and Electron <script>document.write(process.versions.electron)</script>.
-        -->
-        We are using Node.js <span id="node-version"></span>,
-        Chromium <span id="chrome-version"></span>,
-        and Electron <span id="electron-version"></span>.
-        <hr>
-        <div id="holder">
-          Drag your file here
+  “w”               — swap «i» with «y» and romanize</pre>
+  <br>
+
+        <h3>Settings</h3>
+        <div class="application-statistics-form-content">
+            <input type="checkbox" id="application-property-swap-i-y"> Swap «i» with «y» on romanization <br>
         </div>
-        <a href="the-best-page/content.html">The best page</a>
+        <br>
+
+
+        <h3>Letter statistics</h3>
+        <div class="application-statistics-form-content">
+            Number of letters:<br>
+            <input type="radio" id="number-of-letters-1" name="number-of-letters" value="1" checked> <label for="number-of-letters-1">1 letter</label><br>
+            <input type="radio" id="number-of-letters-2" name="number-of-letters" value="2"> <label for="number-of-letters-2">2 letter</label><br>
+            <input type="radio" id="number-of-letters-3" name="number-of-letters" value="3"> <label for="number-of-letters-3">3 letter</label>
+            <br>
+            <br>
+            <button id="js-calculate-statistics">Show statistics</button>
+            <pre id="js-application-statistics"></pre>
+        </div>
+        <br>
+
+        <h3>Version information</h3>
+        <div class="application-statistics-form-content">
+            <!-- 
+            We are using node <script>document.write(process.versions.node)</script>,
+            Chrome <script>document.write(process.versions.chrome)</script>,
+            and Electron <script>document.write(process.versions.electron)</script>.
+            -->
+            We are using Node.js <span id="node-version"></span>,
+            Chromium <span id="chrome-version"></span>,
+            and Electron <span id="electron-version"></span>.
+        </div>
+        <br>
+
+        <h3>Other</h3>
+        <div class="application-statistics-form-content">
+          <div id="holder">
+            Drag your file here
+          </div>
+          <a href="the-best-page/content.html">The best page</a>
+        </div>
       </div>
       <br>
 

@@ -1,0 +1,81 @@
+#js-application-menu button:focus, section:focus#js-application-content {
+    outline   : none;
+    box-shadow: none;
+    border-top: 5px solid #a1a1a1FF;
+}
+section#js-application-content {
+    /* Preventing flickering border on short time between blur and focus events when menu button is pressed. */
+    transition: border-top 0.5s ease-in 0.4s;
+}
+#js-application-menu button:first-child {
+    border-bottom-left-radius: 5px;
+}
+#js-application-menu button:last-child {
+    border-bottom-right-radius: 5px;
+}
+#js-application-menu button:hover {
+    background-color: #a1a1a160;
+}
+#js-application-menu button {
+    padding         : 0;
+    border-width    : 5px 0 0 0;
+    border-top      : 5px solid transparent;
+    background-color: #0000;
+    cursor          : pointer;
+    color           : inherit;
+}
+#js-application-menu button.js-progress-info span {
+    white-space: nowrap;
+}
+#js-application-menu button.js-progress-info {
+    font-size: 16px;
+    text-align: left;
+    padding: 0 12px;
+}
+#js-application-menu button>img {
+    filter: grayscale(1)
+}
+
+/* <FULLSCREEN, CONTRAST, DARK / LIGHT, ROMANIZE  MODE> */
+/* FULLSCREEN is in the flex-layout.css */
+
+/* «CONTRAST MODE» */
+html.contrast #img-high-contrast {
+    display: none;
+}
+html.contrast #img-low-contrast {
+    display: inline;
+}
+html:not(.contrast) #img-high-contrast {
+    display: inline;
+}
+html:not(.contrast) #img-low-contrast {
+    display: none;
+}
+/* «DARK / LIGHT MODE» */
+html.inverted #img-dark {
+    display: none;
+}
+html.inverted #img-light {
+    display: inline;
+}
+html:not(.inverted) #img-dark {
+    display: inline;
+}
+html:not(.inverted) #img-light {
+    display: none;
+}
+/* «ROMANIZE» */
+html.romanized #img-romanized {
+    display: none;
+}
+html.romanized #img-not-romanized {
+    display: inline;
+}
+html:not(.romanized) #img-romanized {
+    display: inline;
+}
+html:not(.romanized) #img-not-romanized {
+    display: none;
+}
+/* </FULLSCREEN, CONTRAST, DARK / LIGHT, ROMANIZE  MODE> */

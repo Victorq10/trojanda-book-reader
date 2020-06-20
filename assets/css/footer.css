@@ -1,0 +1,12 @@
+#js-application-footer #footer-content .js-progress-info div {
+    font-size: 16px;
+}
+#js-application-footer #footer-content .js-progress-info .percent-info {
+    text-align: left;
+}
+#js-application-footer #footer-content .js-progress-info .pages-info {
+    text-align: center;
+}
+#js-application-footer #footer-content .js-progress-info .chapters-info {
+    text-align: right;
+}

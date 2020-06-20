@@ -1,0 +1,10 @@
+.application-statistics-form-content {
+    padding: 20px;
+    border: 1px solid gray;
+}
+#js-application-statistics {
+    font-family: 'Konvalija Mono', monospace;
+}
+input[type="radio"], label[for] {
+    cursor: pointer;
+}
